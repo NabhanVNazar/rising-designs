@@ -240,7 +240,7 @@ export function Stats() {
 
 export function Showcase({ onStart }: { onStart: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const { scrollYProgress } = useScroll({ target: ref });
   const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
   const rotate = useTransform(scrollYProgress, [0, 1], [4, -4]);
 

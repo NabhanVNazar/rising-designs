@@ -88,7 +88,7 @@ export function BuildSequence() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end end"],
+    offset: [0, 1],
   });
 
   const railScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
