@@ -314,7 +314,7 @@ export function Marquee() {
   return (
     <div ref={ref} className="overflow-hidden border-y border-border bg-card py-4">
       <motion.div
-        animate={inView ? { x: ["0%", "-50%"] } : undefined}
+        animate={{ x: inView ? ["0%", "-50%"] : "0%" }}
         transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
         className="flex w-max gap-10 pr-10"
       >
