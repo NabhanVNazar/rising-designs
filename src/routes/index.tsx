@@ -1,24 +1,64 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { motion, useScroll, useSpring } from "motion/react";
+import {
+  DemoModal,
+  Features,
+  Footer,
+  Hero,
+  Marquee,
+  Nav,
+  Showcase,
+  Stats,
+} from "@/components/landing/Sections";
+import { BuildSequence } from "@/components/landing/BuildSequence";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "EDIFICE — AI Home Design That Defines Your Lifestyle" },
+      {
+        name: "description",
+        content:
+          "Design your dream home with AI: instant blueprints, live 3D walkthroughs, elevation styles and construction-ready CAD exports. No architect required.",
+      },
+      { property: "og:title", content: "EDIFICE — AI Home Design That Defines Your Lifestyle" },
+      {
+        property: "og:description",
+        content:
+          "From bare plot to finished elevation: AI blueprints, 3D walkthroughs and build-ready exports.",
+      },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const [demo, setDemo] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
+
+  const start = () => {
+    document.getElementById("how")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
+    <div id="top" className="relative min-h-screen bg-background">
+      <motion.div
+        style={{ scaleX: progress }}
+        className="fixed inset-x-0 top-0 z-50 h-0.5 origin-left bg-primary"
       />
+      <Nav onStart={start} />
+      <main>
+        <Hero onStart={start} onDemo={() => setDemo(true)} />
+        <Marquee />
+        <BuildSequence />
+        <Features />
+        <Stats />
+        <Showcase onStart={start} />
+      </main>
+      <Footer />
+      <DemoModal open={demo} onClose={() => setDemo(false)} />
     </div>
   );
 }
