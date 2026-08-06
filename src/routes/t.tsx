@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 export const Route = createFileRoute("/t")({ component: T });
 function T() {
   const ref = useRef<HTMLDivElement>(null);
-  const a = useScroll({ target: ref });
+  const a = useScroll({ target: ref, offset: [0, 1] });
   const o = useTransform(a.scrollYProgress, [0, 1], [0.2, 1]);
   return <div ref={ref} style={{ height: "300vh" }}><motion.div style={{ opacity: o }}>A</motion.div></div>;
 }
