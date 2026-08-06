@@ -47,13 +47,29 @@ function StageLayer({
 }) {
   const seg = 1 / total;
   const start = index * seg;
+  const clamp = (n: number) => Math.min(1, Math.max(0, n));
+  const stops = [
+    clamp(start - seg * 0.45),
+    clamp(start + seg * 0.15),
+    clamp(start + seg * 0.85),
+    clamp(start + seg * 1.35),
+  ];
   const opacity = useTransform(
     progress,
-    [start - seg * 0.45, start + seg * 0.15, start + seg * 0.85, start + seg * 1.35],
+    stops.map((v, i) => v + i * 0.0001),
     index === 0 ? [1, 1, 1, 0] : index === total - 1 ? [0, 1, 1, 1] : [0, 1, 1, 0],
   );
-  const scale = useTransform(progress, [start - seg, start + seg], [1.12, 1]);
-  const y = useTransform(progress, [start - seg, start + seg], [60, 0]);
+  const scale = useTransform(
+    progress,
+    [clamp(start - seg), clamp(start + seg) + 0.0001],
+    [1.12, 1],
+  );
+  const y = useTransform(
+    progress,
+    [clamp(start - seg), clamp(start + seg) + 0.0001],
+    [60, 0],
+  );
+
 
   return (
     <motion.img
