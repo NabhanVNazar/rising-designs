@@ -71,10 +71,11 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 
 export function Hero({ onStart, onDemo }: { onStart: () => void; onDemo: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 900], ["0%", "22%"]);
+  const opacity = useTransform(scrollY, [0, 700], [1, 0]);
+  const scale = useTransform(scrollY, [0, 900], [1, 1.15]);
+
 
   return (
     <section ref={ref} className="relative h-screen overflow-hidden hero-gradient">
