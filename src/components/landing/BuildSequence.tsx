@@ -147,12 +147,20 @@ function StageCopy({
 }) {
   const seg = 1 / stages.length;
   const start = index * seg;
-  const opacity = useTransform(
+  const clamp = (n: number) => Math.min(1, Math.max(0, n));
+  const stops = [
+    clamp(start - seg * 0.5),
+    clamp(start + seg * 0.2),
+    clamp(start + seg * 0.9),
+    clamp(start + seg * 1.3),
+  ].map((v, i) => v + i * 0.0001);
+  const opacity = useTransform(progress, stops, [0.25, 1, 1, 0.25]);
+  const x = useTransform(
     progress,
-    [start - seg * 0.5, start + seg * 0.2, start + seg * 0.9, start + seg * 1.3],
-    [0.25, 1, 1, 0.25],
+    [clamp(start - seg * 0.5), clamp(start + seg * 0.3) + 0.0001],
+    [24, 0],
   );
-  const x = useTransform(progress, [start - seg * 0.5, start + seg * 0.3], [24, 0]);
+
 
   return (
     <motion.div style={{ opacity, x }} className="py-6 lg:py-8">
