@@ -325,9 +325,12 @@ export function Nav({ onStart }: { onStart: () => void }) {
         <a href="#top" className="flex items-center gap-2 font-display text-sm font-bold tracking-widest">
           <Building2 className="h-4 w-4 text-primary" /> EDIFICE
         </a>
-        <div className="hidden gap-8 text-sm text-muted-foreground sm:flex">
+        <div className="hidden items-center gap-8 text-sm text-muted-foreground sm:flex">
           <a href="#how" className="transition-colors hover:text-foreground">How it works</a>
           <a href="#features" className="transition-colors hover:text-foreground">Features</a>
+          <Link to="/auth" search={{ mode: "signin" }} className="transition-colors hover:text-foreground">
+            Log in
+          </Link>
         </div>
         <button
           onClick={onStart}
