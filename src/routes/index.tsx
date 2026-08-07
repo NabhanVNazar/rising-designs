@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, useScroll, useSpring } from "motion/react";
 import {
@@ -35,11 +35,12 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [demo, setDemo] = useState(false);
+  const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
 
   const start = () => {
-    document.getElementById("how")?.scrollIntoView({ behavior: "smooth" });
+    navigate({ to: "/auth", search: { mode: "signup" } });
   };
 
   return (
