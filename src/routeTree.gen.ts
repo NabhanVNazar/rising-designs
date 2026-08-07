@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedRequirementsRouteImport } from './routes/_authenticated/requirements'
+import { Route as AuthenticatedPlanProjectIdRouteImport } from './routes/_authenticated/plan.$projectId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,18 +41,26 @@ const AuthenticatedRequirementsRoute =
     path: '/requirements',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPlanProjectIdRoute =
+  AuthenticatedPlanProjectIdRouteImport.update({
+    id: '/plan/$projectId',
+    path: '/plan/$projectId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/requirements': typeof AuthenticatedRequirementsRoute
+  '/plan/$projectId': typeof AuthenticatedPlanProjectIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/requirements': typeof AuthenticatedRequirementsRoute
+  '/plan/$projectId': typeof AuthenticatedPlanProjectIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -60,12 +69,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/requirements': typeof AuthenticatedRequirementsRoute
+  '/_authenticated/plan/$projectId': typeof AuthenticatedPlanProjectIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/requirements'
+  fullPaths: '/' | '/auth' | '/dashboard' | '/requirements' | '/plan/$projectId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/requirements'
+  to: '/' | '/auth' | '/dashboard' | '/requirements' | '/plan/$projectId'
   id:
     | '__root__'
     | '/'
@@ -73,6 +83,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/requirements'
+    | '/_authenticated/plan/$projectId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,17 +129,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRequirementsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/plan/$projectId': {
+      id: '/_authenticated/plan/$projectId'
+      path: '/plan/$projectId'
+      fullPath: '/plan/$projectId'
+      preLoaderRoute: typeof AuthenticatedPlanProjectIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedRequirementsRoute: typeof AuthenticatedRequirementsRoute
+  AuthenticatedPlanProjectIdRoute: typeof AuthenticatedPlanProjectIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedRequirementsRoute: AuthenticatedRequirementsRoute,
+  AuthenticatedPlanProjectIdRoute: AuthenticatedPlanProjectIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
