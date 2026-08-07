@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "motion/react";
 import {
   ArrowRight,
