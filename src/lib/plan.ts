@@ -94,8 +94,35 @@ export function normalizePlan(value: unknown): FloorPlan {
         len: Math.max(1, Number(o.len) || 3),
         rot: Number(o.rot) === 90 ? 90 : 0,
       })),
+    walls: (Array.isArray(raw.walls) ? raw.walls : [])
+      .filter((w): w is Wall => !!w && typeof w === "object")
+      .map((w) => ({
+        id: String(w.id ?? uid()),
+        x1: Number(w.x1) || 0,
+        y1: Number(w.y1) || 0,
+        x2: Number(w.x2) || 0,
+        y2: Number(w.y2) || 0,
+      })),
+    labels: (Array.isArray(raw.labels) ? raw.labels : [])
+      .filter((l): l is Label => !!l && typeof l === "object")
+      .map((l) => ({
+        id: String(l.id ?? uid()),
+        x: Number(l.x) || 0,
+        y: Number(l.y) || 0,
+        text: String(l.text ?? "Note"),
+      })),
+    dims: (Array.isArray(raw.dims) ? raw.dims : [])
+      .filter((d): d is Dim => !!d && typeof d === "object")
+      .map((d) => ({
+        id: String(d.id ?? uid()),
+        x1: Number(d.x1) || 0,
+        y1: Number(d.y1) || 0,
+        x2: Number(d.x2) || 0,
+        y2: Number(d.y2) || 0,
+      })),
   };
 }
+
 
 export const ROOM_TONES = [
   "oklch(0.62 0.13 195)",
