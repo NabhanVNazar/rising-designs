@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/app/AppShell";
 import { View3D } from "@/components/planner/View3D";
@@ -50,13 +50,22 @@ function ViewPage() {
     <AppShell
       title={`Step 3 of 3 — ${data?.name ?? "3D model"}`}
       actions={
-        <Link
-          to="/plan/$projectId"
-          params={{ projectId }}
-          className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" /> Back to 2D
-        </Link>
+        <>
+          <Link
+            to="/plan/$projectId"
+            params={{ projectId }}
+            className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to 2D
+          </Link>
+          <Link
+            to="/elevation/$projectId"
+            params={{ projectId }}
+            className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+          >
+            Elevations <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </>
       }
     >
       <h1 className="text-3xl font-bold sm:text-4xl">{data?.name}</h1>
