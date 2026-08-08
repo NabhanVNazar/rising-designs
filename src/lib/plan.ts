@@ -20,14 +20,41 @@ export type Opening = {
   rot: 0 | 90;
 };
 
+export type Wall = {
+  id: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+};
+
+export type Label = {
+  id: string;
+  x: number;
+  y: number;
+  text: string;
+};
+
+export type Dim = {
+  id: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+};
+
 export type FloorPlan = {
   rooms: Room[];
   openings: Opening[];
+  walls: Wall[];
+  labels: Label[];
+  dims: Dim[];
 };
 
-export const emptyPlan: FloorPlan = { rooms: [], openings: [] };
+export const emptyPlan: FloorPlan = { rooms: [], openings: [], walls: [], labels: [], dims: [] };
 
 export const PX_PER_FT = 14;
+
 
 export function uid() {
   return Math.random().toString(36).slice(2, 10);
