@@ -68,6 +68,13 @@
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.82 0.15 195);
   --glow: oklch(0.82 0.15 195 / 35%);
+  /* Clean drafting-studio surface for editor / 3D / elevation workspaces */
+  --studio-bg: oklch(0.96 0.005 220);
+  --studio-paper: oklch(0.995 0.002 220);
+  --studio-line: oklch(0.88 0.012 220);
+  --studio-ink: oklch(0.28 0.03 230);
+  --studio-accent: oklch(0.55 0.16 40);
+
   --gradient-hero: linear-gradient(
     135deg,
     oklch(0.19 0.035 220) 0%,
