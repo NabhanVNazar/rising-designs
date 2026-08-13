@@ -60,6 +60,7 @@ export function PlanEditor({
   const [snapOn, setSnapOn] = useState(true);
   const [pending, setPending] = useState<{ x: number; y: number } | null>(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [cursor, setCursor] = useState({ x: 0, y: 0 });
 
   const canvasRef = useRef<HTMLDivElement>(null);
   const past = useRef<FloorPlan[]>([]);
@@ -392,6 +393,9 @@ export function PlanEditor({
                 : "Click the start point"
               : `Plot ${plot.w} × ${plot.h} ft`}
           </span>
+          <span className="hidden font-mono text-[11px] tabular-nums text-studio-ink/50 sm:block">
+            X {cursor.x.toFixed(1)} ft · Y {cursor.y.toFixed(1)} ft · 1 ft grid / 5 ft major
+          </span>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setSnapOn((s) => !s)}
@@ -432,27 +436,55 @@ export function PlanEditor({
         </div>
 
         <div
-          className="studio-paper relative h-[560px] overflow-auto p-6"
+          className="studio-paper relative h-[560px] overflow-auto"
           onPointerDown={startPan}
-          onPointerMove={onPointerMove}
+          onPointerMove={(e) => {
+            onPointerMove(e);
+            setCursor(pointToFt(e));
+          }}
           onPointerUp={endDrag}
           style={{ cursor: tool === "pan" ? "grab" : "default" }}
         >
-          <div style={{ transform: `translate(${pan.x}px, ${pan.y}px)`, width: "fit-content" }}>
+          <div
+            style={{ transform: `translate(${pan.x}px, ${pan.y}px)`, width: "fit-content" }}
+            className="p-6 pl-10 pt-10"
+          >
+            {/* rulers */}
+            <div
+              className="pointer-events-none absolute left-10 top-6 h-4 border-b border-studio-line-major"
+              style={{
+                width: plot.w * scale,
+                transform: `translate(${pan.x}px, ${pan.y}px)`,
+                backgroundImage: `repeating-linear-gradient(to right, var(--studio-line-major) 0 1px, transparent 1px ${scale * 5}px)`,
+              }}
+            />
+            <div
+              className="pointer-events-none absolute left-6 top-10 w-4 border-r border-studio-line-major"
+              style={{
+                height: plot.h * scale,
+                transform: `translate(${pan.x}px, ${pan.y}px)`,
+                backgroundImage: `repeating-linear-gradient(to bottom, var(--studio-line-major) 0 1px, transparent 1px ${scale * 5}px)`,
+              }}
+            />
             <div
               ref={canvasRef}
               onClick={handleCanvasClick}
-              className="relative rounded-sm border border-studio-line shadow-[0_10px_30px_-18px_rgb(15_23_42/0.45)]"
+              className="relative border border-studio-line-major shadow-[0_1px_0_0_var(--studio-line)]"
               style={{
                 width: plot.w * scale,
                 height: plot.h * scale,
                 backgroundColor: "var(--studio-paper)",
-                backgroundImage:
-                  "linear-gradient(to right, var(--studio-line) 1px, transparent 1px), linear-gradient(to bottom, var(--studio-line) 1px, transparent 1px)",
-                backgroundSize: `${scale}px ${scale}px`,
+                backgroundImage: [
+                  "linear-gradient(to right, var(--studio-line-major) 1px, transparent 1px)",
+                  "linear-gradient(to bottom, var(--studio-line-major) 1px, transparent 1px)",
+                  "linear-gradient(to right, var(--studio-line) 1px, transparent 1px)",
+                  "linear-gradient(to bottom, var(--studio-line) 1px, transparent 1px)",
+                ].join(", "),
+                backgroundSize: `${scale * 5}px ${scale * 5}px, ${scale * 5}px ${scale * 5}px, ${scale}px ${scale}px, ${scale}px ${scale}px`,
                 cursor: tool === "select" || tool === "pan" ? "inherit" : "crosshair",
               }}
             >
+
               {/* walls */}
               <svg className="pointer-events-none absolute inset-0 h-full w-full">
                 {plan.walls.map((w) => (

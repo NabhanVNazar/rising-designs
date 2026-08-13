@@ -191,7 +191,7 @@ function Requirements() {
                       key={x}
                       type="button"
                       onClick={() => setPicked((p) => (on ? p.filter((i) => i !== x) : [...p, x]))}
-                      className={`rounded-full border px-4 py-2 text-xs transition-colors ${
+                      className={`rounded-md border px-4 py-2 text-xs transition-colors ${
                         on ? "border-primary bg-primary/15 text-primary" : "border-border text-muted-foreground"
                       }`}
                     >
@@ -216,7 +216,7 @@ function Requirements() {
           <button
             type="submit"
             disabled={busy}
-            className="glow-ring flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-md bg-foreground py-4 text-sm font-semibold text-background disabled:opacity-60"
           >
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             Continue to floor plan <ArrowRight className="h-4 w-4" />
@@ -252,7 +252,7 @@ function Chips({
           key={o}
           type="button"
           onClick={() => onSelect(o)}
-          className={`rounded-full border px-4 py-2 text-xs transition-colors ${
+          className={`rounded-md border px-4 py-2 text-xs transition-colors ${
             value === o ? "border-primary bg-primary/15 text-primary" : "border-border text-muted-foreground"
           }`}
         >

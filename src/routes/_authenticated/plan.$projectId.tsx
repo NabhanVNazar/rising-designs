@@ -110,7 +110,7 @@ function PlanPage() {
           <button
             onClick={save}
             disabled={saving}
-            className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs disabled:opacity-60"
+            className="flex items-center gap-2 rounded-md border border-border px-4 py-2 text-xs disabled:opacity-60"
           >
             {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />} Save
           </button>
@@ -118,7 +118,7 @@ function PlanPage() {
             to="/view/$projectId"
             params={{ projectId }}
             onClick={save}
-            className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+            className="flex items-center gap-2 rounded-md bg-foreground px-4 py-2 text-xs font-semibold text-background"
           >
             View in 3D <ArrowRight className="h-3.5 w-3.5" />
           </Link>
@@ -141,7 +141,7 @@ function PlanPage() {
         <button
           onClick={aiGenerate}
           disabled={thinking}
-          className="glow-ring flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground disabled:opacity-60"
+          className="flex items-center justify-center gap-2 rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground disabled:opacity-60"
         >
           {thinking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           Generate with AI

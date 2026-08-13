@@ -107,7 +107,7 @@ function AuthPage() {
         </Link>
 
         <div className="surface-card p-8">
-          <div className="mb-6 flex rounded-full border border-border p-1 text-sm">
+          <div className="mb-6 flex rounded-md border border-border p-1 text-sm">
             {(["signin", "signup"] as const).map((t) => (
               <button
                 key={t}
@@ -115,8 +115,8 @@ function AuthPage() {
                   setTab(t);
                   setSent(false);
                 }}
-                className={`flex-1 rounded-full py-2 transition-colors ${
-                  tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                className={`flex-1 rounded-md py-2 transition-colors ${
+                  tab === t ? "bg-primary text-background" : "text-muted-foreground"
                 }`}
               >
                 {t === "signin" ? "Log in" : "Sign up"}
@@ -170,7 +170,7 @@ function AuthPage() {
               <button
                 type="submit"
                 disabled={busy}
-                className="glow-ring flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-md bg-foreground py-3 text-sm font-semibold text-background disabled:opacity-60"
               >
                 {busy && <Loader2 className="h-4 w-4 animate-spin" />}
                 {tab === "signin" ? "Log in" : "Create account"}
@@ -194,7 +194,7 @@ function AuthPage() {
 
           <button
             onClick={google}
-            className="flex w-full items-center justify-center gap-3 rounded-full border border-border py-3 text-sm font-medium transition-colors hover:bg-surface-2"
+            className="flex w-full items-center justify-center gap-3 rounded-md border border-border py-3 text-sm font-medium transition-colors hover:bg-surface-2"
           >
             <GoogleMark /> Continue with Google
           </button>

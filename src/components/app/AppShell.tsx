@@ -34,7 +34,7 @@ export function AppShell({
             {actions}
             <button
               onClick={signOut}
-              className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+              className="flex items-center gap-2 rounded-md border border-border px-4 py-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
               <LogOut className="h-3.5 w-3.5" /> Sign out
             </button>
