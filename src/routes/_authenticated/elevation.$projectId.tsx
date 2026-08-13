@@ -62,7 +62,7 @@ function ElevationPage() {
         <Link
           to="/view/$projectId"
           params={{ projectId }}
-          className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs"
+          className="flex items-center gap-2 rounded-md border border-border px-4 py-2 text-xs"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Back to 3D
         </Link>
@@ -74,25 +74,25 @@ function ElevationPage() {
       </p>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        <div className="flex gap-1 rounded-full border border-border p-1">
+        <div className="flex gap-1 rounded-md border border-border p-1">
           {SIDES.map((s) => (
             <button
               key={s}
               onClick={() => setSide(s)}
-              className={`rounded-full px-4 py-1.5 text-xs capitalize ${
-                side === s ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+              className={`rounded-md px-4 py-1.5 text-xs capitalize ${
+                side === s ? "bg-primary text-background" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {s}
             </button>
           ))}
         </div>
-        <div className="flex gap-1 rounded-full border border-border p-1">
+        <div className="flex gap-1 rounded-md border border-border p-1">
           {(["flat", "gable", "parapet"] as const).map((r) => (
             <button
               key={r}
               onClick={() => setRoof(r)}
-              className={`rounded-full px-4 py-1.5 text-xs capitalize ${
+              className={`rounded-md px-4 py-1.5 text-xs capitalize ${
                 roof === r ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >

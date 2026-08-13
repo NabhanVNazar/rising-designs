@@ -54,14 +54,14 @@ function ViewPage() {
           <Link
             to="/plan/$projectId"
             params={{ projectId }}
-            className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs"
+            className="flex items-center gap-2 rounded-md border border-border px-4 py-2 text-xs"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to 2D
           </Link>
           <Link
             to="/elevation/$projectId"
             params={{ projectId }}
-            className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+            className="flex items-center gap-2 rounded-md bg-foreground px-4 py-2 text-xs font-semibold text-background"
           >
             Elevations <ArrowRight className="h-3.5 w-3.5" />
           </Link>

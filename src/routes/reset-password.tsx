@@ -55,7 +55,7 @@ function ResetPassword() {
           <button
             type="submit"
             disabled={busy}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-md bg-foreground py-3 text-sm font-semibold text-background disabled:opacity-60"
           >
             {busy && <Loader2 className="h-4 w-4 animate-spin" />} Update password
           </button>
