@@ -12,6 +12,7 @@ import {
   Stats,
 } from "@/components/landing/Sections";
 import { BuildSequence } from "@/components/landing/BuildSequence";
+import { useLenis } from "@/hooks/use-lenis";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,10 +35,11 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  useLenis();
   const [demo, setDemo] = useState(false);
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
+  const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.25 });
 
   const start = () => {
     navigate({ to: "/auth", search: { mode: "signup" } });

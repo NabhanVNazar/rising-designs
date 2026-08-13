@@ -14,8 +14,10 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { Counter, Magnetic, MaskLine, Spotlight } from "@/components/landing/motion-bits";
 import buildVideo from "@/assets/build-loop.mp4.asset.json";
 import stage4 from "@/assets/stage-4.jpg";
+
 
 const features = [
   {
@@ -50,12 +52,13 @@ const features = [
   },
 ];
 
-const stats = [
-  { value: "60s", label: "First blueprint" },
-  { value: "12k+", label: "Homes designed" },
-  { value: "₹0", label: "CAD skill needed" },
-  { value: "4", label: "Export formats" },
+const stats: { value: number; prefix?: string; suffix?: string; label: string }[] = [
+  { value: 60, suffix: "s", label: "First blueprint" },
+  { value: 12000, suffix: "+", label: "Homes designed" },
+  { value: 0, prefix: "₹", label: "CAD skill needed" },
+  { value: 4, label: "Export formats" },
 ];
+
 
 function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return (
@@ -82,97 +85,110 @@ export function Hero({ onStart, onDemo }: { onStart: () => void; onDemo: () => v
     <section ref={ref} className="relative h-screen overflow-hidden hero-gradient">
       <motion.video
         style={{ scale }}
-        className="absolute inset-0 h-full w-full object-cover opacity-45"
+        className="absolute inset-0 h-full w-full object-cover opacity-25 grayscale"
         src={buildVideo.url}
         autoPlay
         muted
         loop
         playsInline
       />
-      <div className="absolute inset-0 grid-blueprint opacity-60" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_10%,var(--background)_85%)]" />
+      <div className="absolute inset-0 grid-blueprint" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--background)_0%,transparent_35%,transparent_55%,var(--background)_100%)]" />
 
       <motion.div
         style={{ y, opacity }}
         className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center"
       >
         <motion.span
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-4 py-1.5 text-xs uppercase tracking-[0.28em] text-primary backdrop-blur"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-8 inline-flex items-center gap-2 rounded-full border border-border px-4 py-1.5 text-[10px] uppercase tracking-[0.32em] text-muted-foreground"
         >
-          <Building2 className="h-3.5 w-3.5" /> Edifice
+          <Building2 className="h-3 w-3" /> Edifice studio
         </motion.span>
 
-        <h1 className="max-w-4xl text-5xl font-extrabold leading-[0.95] sm:text-7xl lg:text-8xl">
-          {"Defines your".split(" ").map((w, i) => (
-            <motion.span
-              key={w}
-              initial={{ opacity: 0, y: 40, filter: "blur(12px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.9, delay: 0.15 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-              className="mr-4 inline-block"
-            >
-              {w}
-            </motion.span>
+        <h1 className="max-w-4xl text-5xl font-semibold leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">
+          {["Defines", "your"].map((w, i) => (
+            <span key={w} className="mr-4 inline-block overflow-hidden align-bottom">
+              <motion.span
+                initial={{ y: "115%" }}
+                animate={{ y: "0%" }}
+                transition={{ duration: 1, delay: 0.15 + i * 0.09, ease: [0.16, 1, 0.3, 1] }}
+                className="inline-block"
+              >
+                {w}
+              </motion.span>
+            </span>
           ))}
-          <motion.span
-            initial={{ opacity: 0, y: 40, filter: "blur(12px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 0.9, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="inline-block text-gradient"
-          >
-            lifestyle
-          </motion.span>
+          <span className="inline-block overflow-hidden align-bottom">
+            <motion.span
+              initial={{ y: "115%" }}
+              animate={{ y: "0%" }}
+              transition={{ duration: 1, delay: 0.33, ease: [0.16, 1, 0.3, 1] }}
+              className="inline-block text-gradient"
+            >
+              lifestyle
+            </motion.span>
+          </span>
         </h1>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-          className="mt-7 max-w-xl text-base text-muted-foreground sm:text-lg"
+          transition={{ delay: 0.7, duration: 0.9 }}
+          className="mt-7 max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base"
         >
           Watch your home rise from bare plot to finished elevation — AI blueprints, live 3D
           and construction-ready exports in one flow.
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.85, duration: 0.8 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+          transition={{ delay: 0.85, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-3"
         >
-          <button
-            onClick={onStart}
-            className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:scale-[1.03] glow-ring"
-          >
-            Start designing
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </button>
-          <button
-            onClick={onDemo}
-            className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-surface"
-          >
-            <Play className="h-4 w-4" /> Watch the build
-          </button>
+          <Magnetic>
+            <button
+              onClick={onStart}
+              className="group inline-flex items-center gap-2 rounded-md bg-foreground px-7 py-3.5 text-sm font-semibold text-background transition-colors hover:bg-foreground/90"
+            >
+              Start designing
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </button>
+          </Magnetic>
+          <Magnetic strength={0.25}>
+            <button
+              onClick={onDemo}
+              className="inline-flex items-center gap-2 rounded-md border border-border px-7 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+            >
+              <Play className="h-3.5 w-3.5" /> Watch the build
+            </button>
+          </Magnetic>
         </motion.div>
       </motion.div>
 
       <motion.div
         style={{ opacity }}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[10px] uppercase tracking-[0.4em] text-muted-foreground"
+        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-muted-foreground"
       >
         Scroll to build
+        <motion.span
+          animate={{ scaleY: [0, 1, 0], originY: [0, 0, 1] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+          className="block h-8 w-px bg-border"
+        />
       </motion.div>
     </section>
+
   );
 }
 
 export function Marquee() {
   const words = ["Plot input", "AI blueprint", "2D editing", "3D walkthrough", "Elevations", "Cost estimate", "CAD export"];
   return (
-    <div className="overflow-hidden border-y border-border bg-surface/40 py-4">
+    <div className="overflow-hidden border-y border-border py-4">
       <motion.div
         animate={{ x: ["0%", "-50%"] }}
         transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
@@ -183,7 +199,7 @@ export function Marquee() {
             key={i}
             className="flex items-center gap-10 whitespace-nowrap text-sm uppercase tracking-[0.3em] text-muted-foreground"
           >
-            {w} <Ruler className="h-3.5 w-3.5 text-primary" />
+            {w} <Ruler className="h-3.5 w-3.5 text-muted-foreground/60" />
           </span>
         ))}
       </motion.div>
@@ -194,26 +210,20 @@ export function Marquee() {
 export function Features() {
   return (
     <section id="features" className="mx-auto max-w-7xl px-6 py-28">
-      <Reveal>
-        <p className="text-xs uppercase tracking-[0.4em] text-primary">Toolkit</p>
-        <h2 className="mt-5 max-w-2xl text-4xl font-bold sm:text-5xl">
-          Everything an architect does, minus the six-month wait.
-        </h2>
-      </Reveal>
-      <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Toolkit</p>
+      <h2 className="mt-5 max-w-2xl text-4xl font-semibold sm:text-5xl">
+        <MaskLine text="Everything an architect does, minus the six-month wait." />
+      </h2>
+      <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
         {features.map((f, i) => (
-          <Reveal key={f.title} delay={i * 0.06}>
-            <motion.div
-              whileHover={{ y: -6 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="surface-card h-full p-7"
-            >
-              <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/12 text-primary">
-                <f.icon className="h-5 w-5" />
+          <Reveal key={f.title} delay={i * 0.05}>
+            <Spotlight className="group h-full bg-background p-8 transition-colors hover:bg-surface/60">
+              <div className="mb-6 inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors group-hover:border-primary/60 group-hover:text-primary">
+                <f.icon className="h-4.5 w-4.5" />
               </div>
-              <h3 className="text-lg font-semibold">{f.title}</h3>
+              <h3 className="text-base font-semibold">{f.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
-            </motion.div>
+            </Spotlight>
           </Reveal>
         ))}
       </div>
@@ -224,12 +234,14 @@ export function Features() {
 export function Stats() {
   return (
     <section className="mx-auto max-w-7xl px-6 pb-28">
-      <div className="surface-card grid gap-8 p-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-10 border-y border-border py-12 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s, i) => (
-          <Reveal key={s.label} delay={i * 0.08}>
+          <Reveal key={s.label} delay={i * 0.07}>
             <div>
-              <div className="font-display text-4xl font-bold text-gradient">{s.value}</div>
-              <div className="mt-2 text-xs uppercase tracking-[0.25em] text-muted-foreground">
+              <div className="font-display text-4xl font-semibold tracking-tight">
+                <Counter value={s.value} prefix={s.prefix} suffix={s.suffix} />
+              </div>
+              <div className="mt-3 text-xs uppercase tracking-[0.25em] text-muted-foreground">
                 {s.label}
               </div>
             </div>
@@ -240,46 +252,59 @@ export function Stats() {
   );
 }
 
+
 export function Showcase({ onStart }: { onStart: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref });
-  const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [4, -4]);
+  const y = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1.14, 1]);
 
   return (
     <section ref={ref} className="relative overflow-hidden px-6 py-28">
       <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-2">
-        <motion.div style={{ y, rotate }} className="relative">
-          <div className="absolute -inset-6 rounded-[2rem] bg-primary/10 blur-3xl" />
-          <img
+        <motion.div
+          style={{ y }}
+          initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
+          whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
+          viewport={{ once: true, margin: "0px 0px -15% 0px" }}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+          className="relative overflow-hidden rounded-lg border border-border"
+        >
+          <motion.img
             src={stage4}
             alt="Finished modern home rendered by EDIFICE"
             width={1024}
             height={768}
             loading="lazy"
-            className="relative rounded-3xl border border-border"
+            style={{ scale: imgScale }}
+            className="relative block w-full"
           />
         </motion.div>
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.4em] text-primary">The finish line</p>
-          <h2 className="mt-5 text-4xl font-bold sm:text-5xl">
-            From your requirements to a build-ready set.
+        <div>
+          <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">The finish line</p>
+          <h2 className="mt-5 text-4xl font-semibold sm:text-5xl">
+            <MaskLine text="From your requirements to a build-ready set." />
           </h2>
-          <p className="mt-5 text-muted-foreground">
-            Every design leaves EDIFICE with dimensioned plans, elevations, a material takeoff
-            and a cost estimate — so contractors quote from facts, not guesses.
-          </p>
-          <button
-            onClick={onStart}
-            className="mt-9 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-accent-foreground transition-transform hover:scale-[1.03]"
-          >
-            Design my home <ArrowRight className="h-4 w-4" />
-          </button>
-        </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mt-5 text-muted-foreground">
+              Every design leaves EDIFICE with dimensioned plans, elevations, a material takeoff
+              and a cost estimate — so contractors quote from facts, not guesses.
+            </p>
+            <Magnetic className="mt-9 inline-block">
+              <button
+                onClick={onStart}
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-foreground px-7 py-3.5 text-sm font-semibold text-background transition-colors hover:bg-foreground/90"
+              >
+                Design my home <ArrowRight className="h-4 w-4" />
+              </button>
+            </Magnetic>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
 }
+
 
 export function Footer() {
   return (
@@ -337,7 +362,7 @@ export function Nav({ onStart }: { onStart: () => void }) {
           onClick={onStart}
           onMouseEnter={() => setOpen(true)}
           onMouseLeave={() => setOpen(false)}
-          className="rounded-full border border-primary/40 px-5 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+          className="rounded-md border border-border px-5 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background"
         >
           {open ? "Let's build" : "Get started"}
         </button>

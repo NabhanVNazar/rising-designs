@@ -36,6 +36,8 @@
   --color-studio: var(--studio-bg);
   --color-studio-paper: var(--studio-paper);
   --color-studio-line: var(--studio-line);
+  --color-studio-line-major: var(--studio-line-major);
+
   --color-studio-ink: var(--studio-ink);
   --color-studio-accent: var(--studio-accent);
 
@@ -44,52 +46,53 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  /* Deep architectural teal + electric cyan / warm signal */
-  --background: oklch(0.19 0.035 220);
-  --foreground: oklch(0.97 0.01 210);
-  --surface: oklch(0.23 0.038 218);
-  --surface-2: oklch(0.27 0.04 216);
-  --card: oklch(0.23 0.038 218);
-  --card-foreground: oklch(0.97 0.01 210);
-  --popover: oklch(0.23 0.038 218);
-  --popover-foreground: oklch(0.97 0.01 210);
-  --primary: oklch(0.82 0.15 195);
-  --primary-foreground: oklch(0.18 0.04 220);
-  --secondary: oklch(0.3 0.04 216);
-  --secondary-foreground: oklch(0.97 0.01 210);
-  --muted: oklch(0.27 0.035 218);
-  --muted-foreground: oklch(0.72 0.025 215);
-  --accent: oklch(0.8 0.15 75);
-  --accent-foreground: oklch(0.18 0.04 220);
-  --destructive: oklch(0.62 0.21 25);
+  --radius: 0.5rem;
+  /* Minimal graphite monochrome + one restrained drafting blue */
+  --background: oklch(0.16 0.003 250);
+  --foreground: oklch(0.97 0.002 250);
+  --surface: oklch(0.2 0.003 250);
+  --surface-2: oklch(0.24 0.004 250);
+  --card: oklch(0.2 0.003 250);
+  --card-foreground: oklch(0.97 0.002 250);
+  --popover: oklch(0.2 0.003 250);
+  --popover-foreground: oklch(0.97 0.002 250);
+  --primary: oklch(0.72 0.11 250);
+  --primary-foreground: oklch(0.15 0.01 250);
+  --secondary: oklch(0.26 0.004 250);
+  --secondary-foreground: oklch(0.97 0.002 250);
+  --muted: oklch(0.24 0.004 250);
+  --muted-foreground: oklch(0.68 0.006 250);
+  --accent: oklch(0.86 0.03 85);
+  --accent-foreground: oklch(0.18 0.01 250);
+  --destructive: oklch(0.6 0.18 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.82 0.15 195);
-  --glow: oklch(0.82 0.15 195 / 35%);
-  /* Clean drafting-studio surface for editor / 3D / elevation workspaces */
-  --studio-bg: oklch(0.96 0.005 220);
-  --studio-paper: oklch(0.995 0.002 220);
-  --studio-line: oklch(0.88 0.012 220);
-  --studio-ink: oklch(0.28 0.03 230);
-  --studio-accent: oklch(0.55 0.16 40);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 13%);
+  --ring: oklch(0.72 0.11 250);
+  --glow: oklch(0.72 0.11 250 / 22%);
+  /* Drafting-studio surface for editor / 3D / elevation workspaces */
+  --studio-bg: oklch(0.975 0.001 250);
+  --studio-paper: oklch(1 0 0);
+  --studio-line: oklch(0.905 0.002 250);
+  --studio-line-major: oklch(0.83 0.004 250);
+  --studio-ink: oklch(0.26 0.006 250);
+  --studio-accent: oklch(0.55 0.11 250);
 
   --gradient-hero: linear-gradient(
-    135deg,
-    oklch(0.19 0.035 220) 0%,
-    oklch(0.24 0.06 210) 55%,
-    oklch(0.2 0.045 240) 100%
+    180deg,
+    oklch(0.18 0.004 250) 0%,
+    oklch(0.15 0.003 250) 100%
   );
   --gradient-line: linear-gradient(
     180deg,
     transparent,
-    var(--primary),
+    var(--border),
     transparent
   );
-  --shadow-glow: 0 0 60px -12px var(--glow);
-  --shadow-lift: 0 24px 60px -24px oklch(0 0 0 / 60%);
+  --shadow-glow: 0 0 50px -18px var(--glow);
+  --shadow-lift: 0 20px 50px -30px oklch(0 0 0 / 70%);
 }
+
 
 @layer base {
   * {
@@ -98,6 +101,19 @@
 
   html {
     scroll-behavior: smooth;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  html.lenis {
+    scroll-behavior: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
   }
 
   body {
@@ -112,16 +128,20 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.03em;
+    letter-spacing: -0.035em;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 35%, transparent);
   }
 }
 
 @utility text-gradient {
   background: linear-gradient(
     100deg,
-    var(--foreground) 10%,
-    var(--primary) 55%,
-    var(--accent) 100%
+    var(--foreground) 0%,
+    color-mix(in oklab, var(--foreground) 55%, var(--primary)) 60%,
+    var(--muted-foreground) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -129,9 +149,9 @@
 }
 
 @utility surface-card {
-  background: color-mix(in oklab, var(--surface) 80%, transparent);
+  background: color-mix(in oklab, var(--surface) 70%, transparent);
   border: 1px solid var(--border);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--radius-lg);
   backdrop-filter: blur(14px);
   box-shadow: var(--shadow-lift);
 }
@@ -146,10 +166,15 @@
 
 @utility grid-blueprint {
   background-image:
-    linear-gradient(to right, oklch(1 0 0 / 5%) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(1 0 0 / 5%) 1px, transparent 1px);
-  background-size: 64px 64px;
+    linear-gradient(to right, oklch(1 0 0 / 3.5%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 3.5%) 1px, transparent 1px);
+  background-size: 80px 80px;
 }
+
+@utility hairline {
+  border: 1px solid var(--border);
+}
+
 
 @utility field {
   width: 100%;
