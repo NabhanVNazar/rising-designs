@@ -156,3 +156,75 @@ export function Spotlight({
     </div>
   );
 }
+
+/** 3D pointer tilt — subtle parallax lift on hover. */
+export function Tilt({
+  children,
+  className,
+  max = 8,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  max?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const rx = useSpring(useMotionValue(0), { stiffness: 200, damping: 20 });
+  const ry = useSpring(useMotionValue(0), { stiffness: 200, damping: 20 });
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }}
+      onPointerMove={(e) => {
+        const r = ref.current?.getBoundingClientRect();
+        if (!r) return;
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        ry.set(px * max * 2);
+        rx.set(-py * max * 2);
+      }}
+      onPointerLeave={() => {
+        rx.set(0);
+        ry.set(0);
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Characters scramble into place once in view. */
+export function Scramble({ text, className }: { text: string; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const [out, setOut] = useState(text);
+
+  useEffect(() => {
+    if (!inView) return;
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ/\\|—+*";
+    let frame = 0;
+    const id = setInterval(() => {
+      frame += 1;
+      setOut(
+        text
+          .split("")
+          .map((c, i) =>
+            c === " " || i < frame / 2
+              ? c
+              : chars[Math.floor(Math.random() * chars.length)],
+          )
+          .join(""),
+      );
+      if (frame / 2 > text.length) clearInterval(id);
+    }, 35);
+    return () => clearInterval(id);
+  }, [inView, text]);
+
+  return (
+    <span ref={ref} className={className}>
+      {out}
+    </span>
+  );
+}
+
