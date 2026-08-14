@@ -394,7 +394,7 @@ const steps = [
 
 export function Process() {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 60%"] as never });
+  const { scrollYProgress } = useScroll({ target: ref });
   const height = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
