@@ -8,6 +8,7 @@ import {
   Hero,
   Marquee,
   Nav,
+  Process,
   Showcase,
   Stats,
 } from "@/components/landing/Sections";
@@ -58,6 +59,7 @@ function Index() {
         <BuildSequence />
         <Features />
         <Stats />
+        <Process />
         <Showcase onStart={start} />
       </main>
       <Footer />
