@@ -2,6 +2,8 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Building2, LogOut } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
 
 export function AppShell({
   children,
@@ -32,6 +34,8 @@ export function AppShell({
           {title && <span className="hidden truncate text-sm text-muted-foreground sm:block">{title}</span>}
           <div className="flex items-center gap-2">
             {actions}
+            <ThemeToggle />
+
             <button
               onClick={signOut}
               className="flex items-center gap-2 rounded-md border border-border px-4 py-2 text-xs text-muted-foreground transition-colors hover:text-foreground"

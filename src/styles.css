@@ -93,6 +93,53 @@
   --shadow-lift: 0 20px 50px -30px oklch(0 0 0 / 70%);
 }
 
+/* Clean light mode — warm paper whites, graphite ink, same drafting blue */
+html.light {
+  --background: oklch(0.985 0.001 250);
+  --foreground: oklch(0.22 0.006 250);
+  --surface: oklch(0.965 0.002 250);
+  --surface-2: oklch(0.94 0.003 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.006 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.006 250);
+  --primary: oklch(0.52 0.12 250);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.94 0.003 250);
+  --secondary-foreground: oklch(0.22 0.006 250);
+  --muted: oklch(0.95 0.002 250);
+  --muted-foreground: oklch(0.5 0.008 250);
+  --accent: oklch(0.85 0.04 85);
+  --accent-foreground: oklch(0.22 0.01 250);
+  --destructive: oklch(0.56 0.19 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.22 0.01 250 / 12%);
+  --input: oklch(0.22 0.01 250 / 16%);
+  --ring: oklch(0.52 0.12 250);
+  --glow: oklch(0.52 0.12 250 / 16%);
+
+  --gradient-hero: linear-gradient(
+    180deg,
+    oklch(0.995 0 0) 0%,
+    oklch(0.955 0.002 250) 100%
+  );
+  --shadow-glow: 0 0 50px -20px var(--glow);
+  --shadow-lift: 0 18px 44px -30px oklch(0.2 0.02 250 / 45%);
+}
+
+html.light .hero-video {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+html.light .grid-blueprint {
+  background-image:
+    linear-gradient(to right, oklch(0.2 0.01 250 / 5%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.2 0.01 250 / 5%) 1px, transparent 1px);
+}
+
+
+
 
 @layer base {
   * {
