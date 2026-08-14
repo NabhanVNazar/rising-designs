@@ -14,7 +14,9 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { Counter, Magnetic, MaskLine, Spotlight } from "@/components/landing/motion-bits";
+import { Counter, Magnetic, MaskLine, Scramble, Spotlight, Tilt } from "@/components/landing/motion-bits";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
 import buildVideo from "@/assets/build-loop.mp4.asset.json";
 import stage4 from "@/assets/stage-4.jpg";
 
