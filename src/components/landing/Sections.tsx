@@ -251,8 +251,9 @@ export function Stats() {
                 <Counter value={s.value} prefix={s.prefix} suffix={s.suffix} />
               </div>
               <div className="mt-3 text-xs uppercase tracking-[0.25em] text-muted-foreground">
-                {s.label}
+                <Scramble text={s.label} />
               </div>
+
             </div>
           </Reveal>
         ))}
@@ -367,14 +368,18 @@ export function Nav({ onStart }: { onStart: () => void }) {
             Log in
           </Link>
         </div>
-        <button
-          onClick={onStart}
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
-          className="rounded-md border border-border px-5 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background"
-        >
-          {open ? "Let's build" : "Get started"}
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={onStart}
+            onMouseEnter={() => setOpen(true)}
+            onMouseLeave={() => setOpen(false)}
+            className="rounded-md border border-border px-5 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background"
+          >
+            {open ? "Let's build" : "Get started"}
+          </button>
+        </div>
+
       </nav>
     </header>
   );
