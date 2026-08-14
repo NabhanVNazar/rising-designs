@@ -384,3 +384,50 @@ export function Nav({ onStart }: { onStart: () => void }) {
     </header>
   );
 }
+
+const steps = [
+  { k: "01", t: "Describe the plot", d: "Dimensions, facing, budget and the rooms you need." },
+  { k: "02", t: "Generate the plan", d: "AI drafts a code-aware layout in about a minute." },
+  { k: "03", t: "Refine in 2D", d: "Snap walls, place doors and windows, dimension everything." },
+  { k: "04", t: "Walk it in 3D", d: "Orbit the massing, check volumes, then lock elevations." },
+];
+
+export function Process() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 60%"] as never });
+  const height = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  return (
+    <section className="mx-auto max-w-7xl px-6 pb-28">
+      <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Process</p>
+      <h2 className="mt-5 max-w-2xl text-4xl font-semibold sm:text-5xl">
+        <MaskLine text="Four moves from empty plot to build set." />
+      </h2>
+
+      <div ref={ref} className="relative mt-14 pl-10">
+        <div className="absolute left-[13px] top-2 h-full w-px bg-border" />
+        <motion.div
+          style={{ height }}
+          className="absolute left-[13px] top-2 w-px origin-top bg-primary"
+        />
+        <div className="space-y-12">
+          {steps.map((s, i) => (
+            <motion.div
+              key={s.k}
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              className="relative"
+            >
+              <span className="absolute -left-[34px] top-1.5 h-2.5 w-2.5 rounded-full border border-primary bg-background" />
+              <div className="font-display text-xs tracking-[0.3em] text-muted-foreground">{s.k}</div>
+              <h3 className="mt-2 text-xl font-semibold">{s.t}</h3>
+              <p className="mt-1.5 max-w-md text-sm text-muted-foreground">{s.d}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
