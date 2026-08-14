@@ -217,16 +217,23 @@ export function Features() {
       <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
         {features.map((f, i) => (
           <Reveal key={f.title} delay={i * 0.05}>
-            <Spotlight className="group h-full bg-background p-8 transition-colors hover:bg-surface/60">
-              <div className="mb-6 inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors group-hover:border-primary/60 group-hover:text-primary">
-                <f.icon className="h-4.5 w-4.5" />
-              </div>
-              <h3 className="text-base font-semibold">{f.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
-            </Spotlight>
+            <Tilt className="h-full" max={5}>
+              <Spotlight className="group h-full bg-background p-8 transition-colors hover:bg-surface/60">
+                <motion.div
+                  whileHover={{ rotate: -8, scale: 1.08 }}
+                  transition={{ type: "spring", stiffness: 320, damping: 16 }}
+                  className="mb-6 inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors group-hover:border-primary/60 group-hover:text-primary"
+                >
+                  <f.icon className="h-4.5 w-4.5" />
+                </motion.div>
+                <h3 className="text-base font-semibold">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+              </Spotlight>
+            </Tilt>
           </Reveal>
         ))}
       </div>
+
     </section>
   );
 }
