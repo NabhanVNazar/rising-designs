@@ -87,7 +87,7 @@ export function Hero({ onStart, onDemo }: { onStart: () => void; onDemo: () => v
     <section ref={ref} className="relative h-screen overflow-hidden hero-gradient">
       <motion.video
         style={{ scale }}
-        className="absolute inset-0 h-full w-full object-cover opacity-25 grayscale"
+        className="hero-video absolute inset-0 h-full w-full object-cover opacity-25 grayscale"
         src={buildVideo.url}
         autoPlay
         muted

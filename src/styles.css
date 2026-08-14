@@ -127,6 +127,11 @@ html.light {
   --shadow-lift: 0 18px 44px -30px oklch(0.2 0.02 250 / 45%);
 }
 
+html.light .hero-video {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
 html.light .grid-blueprint {
   background-image:
     linear-gradient(to right, oklch(0.2 0.01 250 / 5%) 1px, transparent 1px),
