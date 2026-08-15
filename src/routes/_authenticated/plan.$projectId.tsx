@@ -115,6 +115,13 @@ function PlanPage() {
             {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />} Save
           </button>
           <Link
+            to="/cad/$projectId"
+            params={{ projectId }}
+            className="flex items-center gap-2 rounded-md border border-border px-4 py-2 text-xs"
+          >
+            Open CAD editor
+          </Link>
+          <Link
             to="/view/$projectId"
             params={{ projectId }}
             onClick={save}

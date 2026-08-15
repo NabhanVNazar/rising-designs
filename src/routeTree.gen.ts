@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedRequirementsRouteImport } from './routes/_authenticated/requirements'
+import { Route as AuthenticatedCadProjectIdRouteImport } from './routes/_authenticated/cad.$projectId'
 import { Route as AuthenticatedElevationProjectIdRouteImport } from './routes/_authenticated/elevation.$projectId'
 import { Route as AuthenticatedPlanProjectIdRouteImport } from './routes/_authenticated/plan.$projectId'
 import { Route as AuthenticatedViewProjectIdRouteImport } from './routes/_authenticated/view.$projectId'
@@ -49,6 +50,12 @@ const AuthenticatedRequirementsRoute =
     path: '/requirements',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedCadProjectIdRoute =
+  AuthenticatedCadProjectIdRouteImport.update({
+    id: '/cad/$projectId',
+    path: '/cad/$projectId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedElevationProjectIdRoute =
   AuthenticatedElevationProjectIdRouteImport.update({
     id: '/elevation/$projectId',
@@ -74,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/requirements': typeof AuthenticatedRequirementsRoute
+  '/cad/$projectId': typeof AuthenticatedCadProjectIdRoute
   '/elevation/$projectId': typeof AuthenticatedElevationProjectIdRoute
   '/plan/$projectId': typeof AuthenticatedPlanProjectIdRoute
   '/view/$projectId': typeof AuthenticatedViewProjectIdRoute
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/requirements': typeof AuthenticatedRequirementsRoute
+  '/cad/$projectId': typeof AuthenticatedCadProjectIdRoute
   '/elevation/$projectId': typeof AuthenticatedElevationProjectIdRoute
   '/plan/$projectId': typeof AuthenticatedPlanProjectIdRoute
   '/view/$projectId': typeof AuthenticatedViewProjectIdRoute
@@ -96,6 +105,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/requirements': typeof AuthenticatedRequirementsRoute
+  '/_authenticated/cad/$projectId': typeof AuthenticatedCadProjectIdRoute
   '/_authenticated/elevation/$projectId': typeof AuthenticatedElevationProjectIdRoute
   '/_authenticated/plan/$projectId': typeof AuthenticatedPlanProjectIdRoute
   '/_authenticated/view/$projectId': typeof AuthenticatedViewProjectIdRoute
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/dashboard'
     | '/requirements'
+    | '/cad/$projectId'
     | '/elevation/$projectId'
     | '/plan/$projectId'
     | '/view/$projectId'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/dashboard'
     | '/requirements'
+    | '/cad/$projectId'
     | '/elevation/$projectId'
     | '/plan/$projectId'
     | '/view/$projectId'
@@ -129,6 +141,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/dashboard'
     | '/_authenticated/requirements'
+    | '/_authenticated/cad/$projectId'
     | '/_authenticated/elevation/$projectId'
     | '/_authenticated/plan/$projectId'
     | '/_authenticated/view/$projectId'
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRequirementsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/cad/$projectId': {
+      id: '/_authenticated/cad/$projectId'
+      path: '/cad/$projectId'
+      fullPath: '/cad/$projectId'
+      preLoaderRoute: typeof AuthenticatedCadProjectIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/elevation/$projectId': {
       id: '/_authenticated/elevation/$projectId'
       path: '/elevation/$projectId'
@@ -212,6 +232,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedRequirementsRoute: typeof AuthenticatedRequirementsRoute
+  AuthenticatedCadProjectIdRoute: typeof AuthenticatedCadProjectIdRoute
   AuthenticatedElevationProjectIdRoute: typeof AuthenticatedElevationProjectIdRoute
   AuthenticatedPlanProjectIdRoute: typeof AuthenticatedPlanProjectIdRoute
   AuthenticatedViewProjectIdRoute: typeof AuthenticatedViewProjectIdRoute
@@ -220,6 +241,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedRequirementsRoute: AuthenticatedRequirementsRoute,
+  AuthenticatedCadProjectIdRoute: AuthenticatedCadProjectIdRoute,
   AuthenticatedElevationProjectIdRoute: AuthenticatedElevationProjectIdRoute,
   AuthenticatedPlanProjectIdRoute: AuthenticatedPlanProjectIdRoute,
   AuthenticatedViewProjectIdRoute: AuthenticatedViewProjectIdRoute,
