@@ -305,13 +305,14 @@ export function CadEditor({
 
   /* ------------------------------- creation -------------------------------- */
 
-  const mk = <T extends Entity>(e: Omit<T, "id" | "layer" | "z"> & { layer?: string; z?: number }): Entity =>
+  const mk = (e: Record<string, unknown>): Entity =>
     ({
       id: cadUid(),
-      layer: e.layer ?? LAYER_FOR[(e as Entity).type],
-      z: e.z ?? 0,
+      layer: LAYER_FOR[e["type"] as keyof typeof LAYER_FOR],
+      z: 0,
       ...e,
-    }) as Entity;
+    }) as unknown as Entity;
+
 
   const finishDraft = useCallback(
     (pts: Pt[], t: Tool) => {
