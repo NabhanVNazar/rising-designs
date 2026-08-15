@@ -768,11 +768,14 @@ export function CadEditor({
 
   /* --------------------------------- files --------------------------------- */
 
-  async function onFile(f: File) {
+  async function onFile(f: File): Promise<void> {
     try {
       if (f.name.toLowerCase().endsWith(".dxf")) {
         const ents = await importDXF(f);
-        if (!ents.length) return toast.error("No supported DXF entities found");
+        if (!ents.length) {
+          toast.error("No supported DXF entities found");
+          return;
+        }
         addEntities(ents);
         toast.success(`Imported ${ents.length} DXF entities`);
       } else {

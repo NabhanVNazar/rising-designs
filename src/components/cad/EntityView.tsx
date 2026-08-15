@@ -165,7 +165,7 @@ export const EntityView = memo(function EntityView({
   units,
 }: {
   e: Entity;
-  layer?: Layer;
+  layer?: Layer | undefined;
   selected: boolean;
   units: Units;
 }) {
