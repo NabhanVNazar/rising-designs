@@ -265,3 +265,24 @@ html.light .grid-blueprint {
 @utility studio-input-focus {
   border-color: var(--primary);
 }
+
+/* ── Scene sequence helpers ───────────────────────────────────────────────── */
+@keyframes pulse-border {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.7;  }
+}
+
+@utility scene-border-pulse {
+  animation: pulse-border 3s ease-in-out infinite;
+}
+
+/* Smooth cross-fade for stage text swaps */
+@utility scene-text-layer {
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+}
+
+/* Subtle film-grain noise on the canvas wrapper for depth */
+@utility canvas-grain {
+  position: relative;
+}
