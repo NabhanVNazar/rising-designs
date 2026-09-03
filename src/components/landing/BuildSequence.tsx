@@ -69,7 +69,7 @@ const frameModules = import.meta.glob<{ default: string }>(
 );
 const FRAME_URLS: string[] = Object.keys(frameModules)
   .sort()
-  .map((k) => frameModules[k].default);
+  .map((k) => frameModules[k]!.default);
 
 function useFrameImages(urls: string[]) {
   const [images, setImages] = useState<HTMLImageElement[]>([]);
@@ -174,8 +174,8 @@ function SceneBackground({ progress }: { progress: MotionValue<number> }) {
     });
   }, [progress]);
 
-  const curr = STAGES[stage];
-  const next = STAGES[Math.min(3, stage + 1)];
+  const curr = STAGES[stage] ?? STAGES[0]!;
+  const next = STAGES[Math.min(3, stage + 1)] ?? curr;
 
   const r = Math.round(lerp(curr.accentRaw[0], next.accentRaw[0], blend));
   const g = Math.round(lerp(curr.accentRaw[1], next.accentRaw[1], blend));
@@ -374,7 +374,7 @@ function DataChip({
   activeStage: number;
   progress: number;
 }) {
-  const stage = STAGES[activeStage];
+  const stage = STAGES[Math.min(3, Math.max(0, activeStage))] ?? STAGES[0]!;
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
