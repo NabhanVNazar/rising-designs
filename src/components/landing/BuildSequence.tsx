@@ -166,9 +166,9 @@ function SceneBackground({ progress }: { progress: MotionValue<number> }) {
 
   useEffect(() => {
     return progress.on("change", (v) => {
-      const raw = v * 4;
-      const s = Math.min(3, Math.floor(raw));
-      const b = raw % 1;
+      const raw = Number.isFinite(v) ? Math.min(3.999, Math.max(0, v * 4)) : 0;
+      const s = Math.min(3, Math.max(0, Math.floor(raw)));
+      const b = Math.min(1, Math.max(0, raw % 1));
       setStage(s);
       setBlend(b);
     });
