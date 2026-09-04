@@ -465,7 +465,10 @@ export function CadEditor({
             ? sel
             : [hit.id];
         setSel(next);
+        setPast((pp) => [...pp.slice(-99), doc]);
+        setFuture([]);
         setDragging({ start: p, orig: doc.entities.filter((e) => next.includes(e.id)) });
+
       } else {
         if (!ev.shiftKey) setSel([]);
         setMarquee({ a: raw, b: raw });
