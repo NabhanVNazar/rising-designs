@@ -498,6 +498,7 @@ export function CadEditor({
     else {
       commitTwoPoint(draft[0]!, p, tool);
       setDraft(tool === "wall" ? [p] : []);
+      if (tool !== "wall" && tool !== "line") setTool("select");
     }
   }
 
@@ -734,6 +735,7 @@ export function CadEditor({
     else {
       commitTwoPoint(draft[0]!, p, tool);
       setDraft(tool === "wall" ? [p] : []);
+      if (tool !== "wall" && tool !== "line") setTool("select");
     }
   }
 

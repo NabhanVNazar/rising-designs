@@ -202,7 +202,7 @@ export function View3D({ plan, plot }: { plan: FloorPlan; plot: { w: number; h: 
                       width: wall.len,
                       height: wallPx,
                       transformOrigin: "0 0",
-                      transform: `rotateZ(${wall.angle}deg) rotateX(-90deg)`,
+                      transform: `rotateZ(${wall.angle}deg) rotateX(90deg)`,
                       background: `linear-gradient(180deg, color-mix(in oklab, ${c} 45%, white), color-mix(in oklab, ${c} 65%, black 12%))`,
                       border: "1px solid color-mix(in oklab, black 18%, transparent)",
                       opacity,
