@@ -533,10 +533,28 @@ export function CadEditor({
   function onPointerUp() {
     if (panning) setPanning(null);
     if (dragging) {
-      setPast((p) => [...p, { ...doc, entities: dragging.orig.concat(doc.entities.filter((e) => !dragging.orig.some((o) => o.id === e.id))) }]);
+      const movedIds = dragging.orig.map((o) => o.id);
+      // re-host any dragged door/window onto the nearest wall so it stays in the wall
+      setDocState((d0) => {
+        const ws = d0.entities.filter((e): e is Extract<Entity, { type: "wall" }> => e.type === "wall");
+        return {
+          ...d0,
+          entities: d0.entities.map((e) => {
+            if (!movedIds.includes(e.id) || (e.type !== "door" && e.type !== "window")) return e;
+            let best: { c: Pt; rot: number; d: number } | null = null;
+            for (const w of ws) {
+              const f = closestOnSegment(e.c, w.a, w.b);
+              const dd = dist(e.c, f);
+              if (!best || dd < best.d) best = { c: f, rot: angleDeg(w.a, w.b), d: dd };
+            }
+            return best && best.d < 1200 ? { ...e, c: best.c, rot: best.rot } : e;
+          }),
+        };
+      });
       setDirty(true);
       setDragging(null);
     }
+
     if (marquee) {
       const x1 = Math.min(marquee.a.x, marquee.b.x);
       const x2 = Math.max(marquee.a.x, marquee.b.x);
