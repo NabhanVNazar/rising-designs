@@ -388,13 +388,41 @@ export function CadEditor({
           const w = Math.abs(b.x - a.x);
           const h = Math.abs(b.y - a.y);
           if (w < 1 || h < 1) return;
-          addEntities([
-            t === "room"
-              ? mk({ type: "room", x, y, w, h, rot: 0, name: `Room ${doc.entities.filter((e) => e.type === "room").length + 1}` } as never)
-              : mk({ type: "rect", x, y, w, h, rot: 0 } as never),
-          ]);
+          if (t === "room") {
+            const room = mk({
+              type: "room",
+              x,
+              y,
+              w,
+              h,
+              rot: 0,
+              name: `Room ${doc.entities.filter((e) => e.type === "room").length + 1}`,
+            } as never);
+            // enclose the room with four walls
+            const corners: Pt[] = [
+              { x, y },
+              { x: x + w, y },
+              { x: x + w, y: y + h },
+              { x, y: y + h },
+            ];
+            const enclosing = corners.map((c0, i) =>
+              mk({
+                type: "wall",
+                a: c0,
+                b: corners[(i + 1) % 4]!,
+                thickness: wallThickness,
+                kind: wallKind,
+                height: DEFAULTS.wallHeight,
+              } as never),
+            );
+            addEntities([...enclosing, room]);
+            setSel([room.id]);
+          } else {
+            addEntities([mk({ type: "rect", x, y, w, h, rot: 0 } as never)]);
+          }
           break;
         }
+
         case "circle":
           addEntities([mk({ type: "circle", c: a, r: dist(a, b) } as never)]);
           break;
