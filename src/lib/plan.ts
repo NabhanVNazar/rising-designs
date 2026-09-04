@@ -136,3 +136,27 @@ export const ROOM_TONES = [
 export function toneColor(tone: number) {
   return ROOM_TONES[((tone % ROOM_TONES.length) + ROOM_TONES.length) % ROOM_TONES.length];
 }
+
+const MM_PER_FT = 304.8;
+
+/** Build a quick-plan (feet) from CAD document rooms so the 3D view can extrude them. */
+export function planFromCad(cad: unknown): FloorPlan {
+  const doc = (cad ?? {}) as { entities?: unknown };
+  const ents = Array.isArray(doc.entities) ? (doc.entities as Record<string, unknown>[]) : [];
+  const cadRooms = ents.filter((e) => e["type"] === "room");
+  if (!cadRooms.length) return emptyPlan;
+  const minX = Math.min(...cadRooms.map((r) => Number(r["x"]) || 0));
+  const minY = Math.min(...cadRooms.map((r) => Number(r["y"]) || 0));
+  return {
+    ...emptyPlan,
+    rooms: cadRooms.map((r, i) => ({
+      id: String(r["id"] ?? uid()),
+      name: String(r["name"] ?? `Room ${i + 1}`),
+      x: ((Number(r["x"]) || 0) - minX) / MM_PER_FT,
+      y: ((Number(r["y"]) || 0) - minY) / MM_PER_FT,
+      w: Math.max(1, (Number(r["w"]) || 0) / MM_PER_FT),
+      h: Math.max(1, (Number(r["h"]) || 0) / MM_PER_FT),
+      tone: i % 6,
+    })),
+  };
+}

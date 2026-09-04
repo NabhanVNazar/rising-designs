@@ -21,6 +21,7 @@ import {
   Plus,
   Printer,
   Redo2,
+  RotateCcw,
   RotateCw,
   Ruler,
   Save,
@@ -388,13 +389,41 @@ export function CadEditor({
           const w = Math.abs(b.x - a.x);
           const h = Math.abs(b.y - a.y);
           if (w < 1 || h < 1) return;
-          addEntities([
-            t === "room"
-              ? mk({ type: "room", x, y, w, h, rot: 0, name: `Room ${doc.entities.filter((e) => e.type === "room").length + 1}` } as never)
-              : mk({ type: "rect", x, y, w, h, rot: 0 } as never),
-          ]);
+          if (t === "room") {
+            const room = mk({
+              type: "room",
+              x,
+              y,
+              w,
+              h,
+              rot: 0,
+              name: `Room ${doc.entities.filter((e) => e.type === "room").length + 1}`,
+            } as never);
+            // enclose the room with four walls
+            const corners: Pt[] = [
+              { x, y },
+              { x: x + w, y },
+              { x: x + w, y: y + h },
+              { x, y: y + h },
+            ];
+            const enclosing = corners.map((c0, i) =>
+              mk({
+                type: "wall",
+                a: c0,
+                b: corners[(i + 1) % 4]!,
+                thickness: wallThickness,
+                kind: wallKind,
+                height: DEFAULTS.wallHeight,
+              } as never),
+            );
+            addEntities([...enclosing, room]);
+            setSel([room.id]);
+          } else {
+            addEntities([mk({ type: "rect", x, y, w, h, rot: 0 } as never)]);
+          }
           break;
         }
+
         case "circle":
           addEntities([mk({ type: "circle", c: a, r: dist(a, b) } as never)]);
           break;
@@ -437,7 +466,10 @@ export function CadEditor({
             ? sel
             : [hit.id];
         setSel(next);
+        setPast((pp) => [...pp.slice(-99), doc]);
+        setFuture([]);
         setDragging({ start: p, orig: doc.entities.filter((e) => next.includes(e.id)) });
+
       } else {
         if (!ev.shiftKey) setSel([]);
         setMarquee({ a: raw, b: raw });
@@ -470,6 +502,7 @@ export function CadEditor({
     else {
       commitTwoPoint(draft[0]!, p, tool);
       setDraft(tool === "wall" ? [p] : []);
+      if (tool !== "wall" && tool !== "line") setTool("select");
     }
   }
 
@@ -501,10 +534,28 @@ export function CadEditor({
   function onPointerUp() {
     if (panning) setPanning(null);
     if (dragging) {
-      setPast((p) => [...p, { ...doc, entities: dragging.orig.concat(doc.entities.filter((e) => !dragging.orig.some((o) => o.id === e.id))) }]);
+      const movedIds = dragging.orig.map((o) => o.id);
+      // re-host any dragged door/window onto the nearest wall so it stays in the wall
+      setDocState((d0) => {
+        const ws = d0.entities.filter((e): e is Extract<Entity, { type: "wall" }> => e.type === "wall");
+        return {
+          ...d0,
+          entities: d0.entities.map((e) => {
+            if (!movedIds.includes(e.id) || (e.type !== "door" && e.type !== "window")) return e;
+            let best: { c: Pt; rot: number; d: number } | null = null;
+            for (const w of ws) {
+              const f = closestOnSegment(e.c, w.a, w.b);
+              const dd = dist(e.c, f);
+              if (!best || dd < best.d) best = { c: f, rot: angleDeg(w.a, w.b), d: dd };
+            }
+            return best && best.d < 1200 ? { ...e, c: best.c, rot: best.rot } : e;
+          }),
+        };
+      });
       setDirty(true);
       setDragging(null);
     }
+
     if (marquee) {
       const x1 = Math.min(marquee.a.x, marquee.b.x);
       const x2 = Math.max(marquee.a.x, marquee.b.x);
@@ -706,6 +757,7 @@ export function CadEditor({
     else {
       commitTwoPoint(draft[0]!, p, tool);
       setDraft(tool === "wall" ? [p] : []);
+      if (tool !== "wall" && tool !== "line") setTool("select");
     }
   }
 
@@ -751,6 +803,8 @@ export function CadEditor({
         return;
       }
       if (ev.key === "Delete" || ev.key === "Backspace") return deleteSel();
+      if (ev.key === "[") return rotateSel(-15);
+      if (ev.key === "]") return rotateSel(15);
       if (ev.key === " ") {
         ev.preventDefault();
         return setOrtho((o) => !o);
@@ -764,7 +818,7 @@ export function CadEditor({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, redo, deleteSel, duplicateSel, draft, tool, finishDraft, selected, clipboard, addEntities, pickableEntities, save]);
+  }, [undo, redo, deleteSel, duplicateSel, draft, tool, finishDraft, selected, clipboard, addEntities, pickableEntities, save, rotateSel]);
 
   /* --------------------------------- files --------------------------------- */
 
@@ -837,7 +891,9 @@ export function CadEditor({
         <TBtn onClick={undo} icon={Undo2} label="Undo" disabled={!past.length} />
         <TBtn onClick={redo} icon={Redo2} label="Redo" disabled={!future.length} />
         <TBtn onClick={duplicateSel} icon={Copy} label="Duplicate" disabled={!sel.length} />
-        <TBtn onClick={() => rotateSel(90)} icon={RotateCw} label="Rotate" disabled={!sel.length} />
+        <TBtn onClick={() => rotateSel(90)} icon={RotateCw} label="Rotate 90°" disabled={!sel.length} />
+        <TBtn onClick={() => rotateSel(-15)} icon={RotateCcw} label="-15°" disabled={!sel.length} />
+        <TBtn onClick={() => rotateSel(15)} icon={RotateCw} label="+15°" disabled={!sel.length} />
         <TBtn onClick={mirrorSel} icon={FlipHorizontal} label="Mirror" disabled={!sel.length} />
         <TBtn onClick={deleteSel} icon={Trash2} label="Delete" disabled={!sel.length} />
         <Divider />
@@ -1036,9 +1092,20 @@ export function CadEditor({
 
           {draft.length > 0 && (
             <div className="pointer-events-none absolute left-3 top-3 rounded bg-[#111827] px-2 py-1 text-[11px] text-white">
-              L {fmtLen(liveLen, doc.units)} · ∠ {liveAng.toFixed(1)}°
+              {tool === "rect" || tool === "room" ? (
+                <>
+                  W {fmtLen(Math.abs(cursor.x - draft[0]!.x), doc.units)} · D{" "}
+                  {fmtLen(Math.abs(cursor.y - draft[0]!.y), doc.units)} ·{" "}
+                  {fmtArea(Math.abs(cursor.x - draft[0]!.x) * Math.abs(cursor.y - draft[0]!.y), doc.units)}
+                </>
+              ) : (
+                <>
+                  L {fmtLen(liveLen, doc.units)} · ∠ {liveAng.toFixed(1)}°
+                </>
+              )}
             </div>
           )}
+
           {snapPt && (
             <div className="pointer-events-none absolute right-3 top-3 rounded bg-[#16a34a] px-2 py-1 text-[11px] text-white">
               {snapPt.kind}

@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/app/AppShell";
 import { View3D } from "@/components/planner/View3D";
-import { normalizePlan, planArea } from "@/lib/plan";
+import { normalizePlan, planArea, planFromCad } from "@/lib/plan";
 
 export const Route = createFileRoute("/_authenticated/view/$projectId")({
   head: () => ({
@@ -43,7 +43,9 @@ function ViewPage() {
     );
   }
 
-  const plan = normalizePlan(data?.plan);
+  const base = normalizePlan(data?.plan);
+  const cadPlan = planFromCad((data?.plan as Record<string, unknown> | null)?.["cad"]);
+  const plan = base.rooms.length ? base : cadPlan;
   const plot = (data?.plot ?? {}) as Record<string, unknown>;
 
   return (
@@ -76,7 +78,10 @@ function ViewPage() {
       <div className="mt-8">
         <View3D
           plan={plan}
-          plot={{ w: Number(plot["width"]) || 40, h: Number(plot["length"]) || 50 }}
+          plot={{
+            w: Math.max(Number(plot["width"]) || 40, ...plan.rooms.map((r) => r.x + r.w + 4)),
+            h: Math.max(Number(plot["length"]) || 50, ...plan.rooms.map((r) => r.y + r.h + 4)),
+          }}
         />
       </div>
     </AppShell>

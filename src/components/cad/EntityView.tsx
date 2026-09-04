@@ -1,7 +1,7 @@
 import { memo } from "react";
 import type { Entity, Layer, Units } from "@/lib/cad/types";
 import { angleDeg, dist, entityPoints, mid, polar } from "@/lib/cad/geometry";
-import { fmtLen } from "@/lib/cad/units";
+import { fmtArea, fmtLen } from "@/lib/cad/units";
 import { libItem } from "./library";
 
 const SEL = "#2563eb";
@@ -183,18 +183,53 @@ export const EntityView = memo(function EntityView({
         { x: e.b.x - nx, y: e.b.y - ny },
         { x: e.a.x - nx, y: e.a.y - ny },
       ];
+      const m = mid(e.a, e.b);
+      const len = dist(e.a, e.b);
+      const flip = ang > 90 || ang < -90;
       return (
-        <polygon
-          points={p.map((q) => `${q.x},${q.y}`).join(" ")}
-          fill={selected ? "rgba(37,99,235,0.22)" : e.kind === "exterior" ? "rgba(30,41,59,0.85)" : "rgba(71,85,105,0.5)"}
-          stroke={color}
-          strokeWidth={selected ? 40 : 20}
-          strokeLinejoin="miter"
-        />
+        <g>
+          <polygon
+            points={p.map((q) => `${q.x},${q.y}`).join(" ")}
+            fill={selected ? "rgba(37,99,235,0.22)" : e.kind === "exterior" ? "rgba(30,41,59,0.85)" : "rgba(71,85,105,0.5)"}
+            stroke={color}
+            strokeWidth={selected ? 40 : 20}
+            strokeLinejoin="miter"
+          />
+          {len > 300 && (
+            <text
+              x={m.x}
+              y={m.y - e.thickness / 2 - 90}
+              fontSize={220}
+              textAnchor="middle"
+              fill={color}
+              transform={`rotate(${flip ? -ang + 180 : -ang} ${m.x} ${m.y})`}
+            >
+              {fmtLen(len, units)}
+            </text>
+          )}
+        </g>
       );
     }
-    case "line":
-      return <line x1={e.a.x} y1={e.a.y} x2={e.b.x} y2={e.b.y} stroke={color} strokeWidth={sw} />;
+    case "line": {
+      const lm = mid(e.a, e.b);
+      const la = angleDeg(e.a, e.b);
+      return (
+        <g>
+          <line x1={e.a.x} y1={e.a.y} x2={e.b.x} y2={e.b.y} stroke={color} strokeWidth={sw} />
+          <text
+            x={lm.x}
+            y={lm.y - 90}
+            fontSize={200}
+            textAnchor="middle"
+            fill={color}
+            opacity={0.75}
+            transform={`rotate(${la > 90 || la < -90 ? -la + 180 : -la} ${lm.x} ${lm.y})`}
+          >
+            {fmtLen(dist(e.a, e.b), units)}
+          </text>
+        </g>
+      );
+    }
     case "polyline":
       return (
         <polyline
@@ -230,8 +265,11 @@ export const EntityView = memo(function EntityView({
               <text x={cx} y={cy - 60} fontSize={300} textAnchor="middle" fill={color} fontWeight={600}>
                 {e.name}
               </text>
-              <text x={cx} y={cy + 280} fontSize={230} textAnchor="middle" fill={color} opacity={0.7}>
+              <text x={cx} y={cy + 280} fontSize={230} textAnchor="middle" fill={color} opacity={0.75}>
                 {fmtLen(e.w, units)} × {fmtLen(e.h, units)}
+              </text>
+              <text x={cx} y={cy + 560} fontSize={200} textAnchor="middle" fill={color} opacity={0.6}>
+                {fmtArea(e.w * e.h, units)}
               </text>
             </>
           )}
