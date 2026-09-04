@@ -78,7 +78,10 @@ function ViewPage() {
       <div className="mt-8">
         <View3D
           plan={plan}
-          plot={{ w: Number(plot["width"]) || 40, h: Number(plot["length"]) || 50 }}
+          plot={{
+            w: Math.max(Number(plot["width"]) || 40, ...plan.rooms.map((r) => r.x + r.w + 4)),
+            h: Math.max(Number(plot["length"]) || 50, ...plan.rooms.map((r) => r.y + r.h + 4)),
+          }}
         />
       </div>
     </AppShell>
