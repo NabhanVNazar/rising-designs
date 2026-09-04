@@ -21,6 +21,7 @@ import {
   Plus,
   Printer,
   Redo2,
+  RotateCcw,
   RotateCw,
   Ruler,
   Save,
@@ -802,6 +803,8 @@ export function CadEditor({
         return;
       }
       if (ev.key === "Delete" || ev.key === "Backspace") return deleteSel();
+      if (ev.key === "[") return rotateSel(-15);
+      if (ev.key === "]") return rotateSel(15);
       if (ev.key === " ") {
         ev.preventDefault();
         return setOrtho((o) => !o);
@@ -815,7 +818,7 @@ export function CadEditor({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, redo, deleteSel, duplicateSel, draft, tool, finishDraft, selected, clipboard, addEntities, pickableEntities, save]);
+  }, [undo, redo, deleteSel, duplicateSel, draft, tool, finishDraft, selected, clipboard, addEntities, pickableEntities, save, rotateSel]);
 
   /* --------------------------------- files --------------------------------- */
 
@@ -888,7 +891,9 @@ export function CadEditor({
         <TBtn onClick={undo} icon={Undo2} label="Undo" disabled={!past.length} />
         <TBtn onClick={redo} icon={Redo2} label="Redo" disabled={!future.length} />
         <TBtn onClick={duplicateSel} icon={Copy} label="Duplicate" disabled={!sel.length} />
-        <TBtn onClick={() => rotateSel(90)} icon={RotateCw} label="Rotate" disabled={!sel.length} />
+        <TBtn onClick={() => rotateSel(90)} icon={RotateCw} label="Rotate 90°" disabled={!sel.length} />
+        <TBtn onClick={() => rotateSel(-15)} icon={RotateCcw} label="-15°" disabled={!sel.length} />
+        <TBtn onClick={() => rotateSel(15)} icon={RotateCw} label="+15°" disabled={!sel.length} />
         <TBtn onClick={mirrorSel} icon={FlipHorizontal} label="Mirror" disabled={!sel.length} />
         <TBtn onClick={deleteSel} icon={Trash2} label="Delete" disabled={!sel.length} />
         <Divider />

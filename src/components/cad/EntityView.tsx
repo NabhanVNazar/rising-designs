@@ -1,7 +1,7 @@
 import { memo } from "react";
 import type { Entity, Layer, Units } from "@/lib/cad/types";
 import { angleDeg, dist, entityPoints, mid, polar } from "@/lib/cad/geometry";
-import { fmtLen } from "@/lib/cad/units";
+import { fmtArea, fmtLen } from "@/lib/cad/units";
 import { libItem } from "./library";
 
 const SEL = "#2563eb";
@@ -265,8 +265,11 @@ export const EntityView = memo(function EntityView({
               <text x={cx} y={cy - 60} fontSize={300} textAnchor="middle" fill={color} fontWeight={600}>
                 {e.name}
               </text>
-              <text x={cx} y={cy + 280} fontSize={230} textAnchor="middle" fill={color} opacity={0.7}>
+              <text x={cx} y={cy + 280} fontSize={230} textAnchor="middle" fill={color} opacity={0.75}>
                 {fmtLen(e.w, units)} × {fmtLen(e.h, units)}
+              </text>
+              <text x={cx} y={cy + 560} fontSize={200} textAnchor="middle" fill={color} opacity={0.6}>
+                {fmtArea(e.w * e.h, units)}
               </text>
             </>
           )}
