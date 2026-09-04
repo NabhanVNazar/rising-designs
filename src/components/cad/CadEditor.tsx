@@ -1087,9 +1087,20 @@ export function CadEditor({
 
           {draft.length > 0 && (
             <div className="pointer-events-none absolute left-3 top-3 rounded bg-[#111827] px-2 py-1 text-[11px] text-white">
-              L {fmtLen(liveLen, doc.units)} · ∠ {liveAng.toFixed(1)}°
+              {tool === "rect" || tool === "room" ? (
+                <>
+                  W {fmtLen(Math.abs(cursor.x - draft[0]!.x), doc.units)} · D{" "}
+                  {fmtLen(Math.abs(cursor.y - draft[0]!.y), doc.units)} ·{" "}
+                  {fmtArea(Math.abs(cursor.x - draft[0]!.x) * Math.abs(cursor.y - draft[0]!.y), doc.units)}
+                </>
+              ) : (
+                <>
+                  L {fmtLen(liveLen, doc.units)} · ∠ {liveAng.toFixed(1)}°
+                </>
+              )}
             </div>
           )}
+
           {snapPt && (
             <div className="pointer-events-none absolute right-3 top-3 rounded bg-[#16a34a] px-2 py-1 text-[11px] text-white">
               {snapPt.kind}
