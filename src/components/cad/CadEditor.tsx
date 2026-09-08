@@ -148,6 +148,7 @@ export function CadEditor({
   const [sheet, setSheet] = useState<SheetSize>("A3");
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
 
   const svgRef = useRef<SVGSVGElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
