@@ -142,7 +142,7 @@ function AuthPage() {
                     required
                     maxLength={80}
                     className="field"
-                    placeholder="Nabhan V Nazar"
+                    placeholder="Your Full Name"
                   />
                 </Field>
               )}
