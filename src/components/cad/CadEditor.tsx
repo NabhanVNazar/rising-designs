@@ -573,8 +573,23 @@ export function CadEditor({
     }
   }
 
-  function onDoubleClick() {
-    if (draft.length) finishDraft(draft, tool);
+  function onDoubleClick(ev: React.MouseEvent) {
+    if (draft.length) return finishDraft(draft, tool);
+    const raw = toWorld(ev.clientX, ev.clientY);
+    const hit = [...pickableEntities].reverse().find((e) => hitTest(e, raw, tolMm));
+    if (hit) {
+      setSel([hit.id]);
+      setRightTab("props");
+    }
+  }
+
+  function onContextMenu(ev: React.MouseEvent) {
+    ev.preventDefault();
+    const raw = toWorld(ev.clientX, ev.clientY);
+    const hit = [...pickableEntities].reverse().find((e) => hitTest(e, raw, tolMm));
+    if (hit && !sel.includes(hit.id)) setSel([hit.id]);
+    const r = wrapRef.current?.getBoundingClientRect();
+    setMenu({ x: ev.clientX - (r?.left ?? 0), y: ev.clientY - (r?.top ?? 0) });
   }
 
   /* ------------------------------- commands -------------------------------- */
