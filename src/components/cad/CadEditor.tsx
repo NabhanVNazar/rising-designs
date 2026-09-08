@@ -831,6 +831,14 @@ export function CadEditor({
         return;
       }
       if (ev.key === "Delete" || ev.key === "Backspace") return deleteSel();
+      if (ev.key.startsWith("Arrow") && sel.length) {
+        ev.preventDefault();
+        const step = ev.shiftKey ? doc.gridSize : doc.gridSize / 5;
+        const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[
+          ev.key
+        ] ?? [0, 0];
+        return nudgeSel(d[0]!, d[1]!);
+      }
       if (ev.key === "[") return rotateSel(-15);
       if (ev.key === "]") return rotateSel(15);
       if (ev.key === " ") {
