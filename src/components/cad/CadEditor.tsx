@@ -1022,6 +1022,7 @@ export function CadEditor({
             onPointerUp={onPointerUp}
             onPointerLeave={onPointerUp}
             onDoubleClick={onDoubleClick}
+            onContextMenu={onContextMenu}
           >
             <defs>
               <marker id="dimArrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
