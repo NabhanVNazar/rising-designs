@@ -854,7 +854,7 @@ export function CadEditor({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, redo, deleteSel, duplicateSel, draft, tool, finishDraft, selected, clipboard, addEntities, pickableEntities, save, rotateSel]);
+  }, [undo, redo, deleteSel, duplicateSel, draft, tool, finishDraft, selected, clipboard, addEntities, pickableEntities, save, rotateSel, nudgeSel, sel, doc.gridSize]);
 
   /* --------------------------------- files --------------------------------- */
 
