@@ -1127,6 +1127,45 @@ export function CadEditor({
             </g>
           </svg>
 
+          {menu && (
+            <>
+              <div className="fixed inset-0 z-40" onPointerDown={() => setMenu(null)} onContextMenu={(e) => e.preventDefault()} />
+              <div
+                className="absolute z-50 w-44 overflow-hidden rounded border border-studio-line bg-studio-paper text-[11px] shadow-lg"
+                style={{ left: menu.x, top: menu.y }}
+              >
+                {[
+                  { label: "Edit properties", fn: () => setRightTab("props"), need: true },
+                  { label: "Duplicate", fn: duplicateSel, need: true },
+                  { label: "Copy", fn: () => setClipboard(selected.map((e) => ({ ...e }))), need: true },
+                  {
+                    label: "Paste",
+                    fn: () => addEntities(clipboard.map((e) => ({ ...translateEntity(e, { x: 600, y: 600 }), id: cadUid() }))),
+                    need: false,
+                    disabled: !clipboard.length,
+                  },
+                  { label: "Rotate 90°", fn: () => rotateSel(90), need: true },
+                  { label: "Mirror", fn: mirrorSel, need: true },
+                  { label: "Delete", fn: deleteSel, need: true, danger: true },
+                ].map((m) => (
+                  <button
+                    key={m.label}
+                    disabled={(m.need && !sel.length) || m.disabled}
+                    onClick={() => {
+                      m.fn();
+                      setMenu(null);
+                    }}
+                    className={`block w-full px-3 py-1.5 text-left hover:bg-black/5 disabled:opacity-40 ${
+                      m.danger ? "text-red-600" : ""
+                    }`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
           {draft.length > 0 && (
             <div className="pointer-events-none absolute left-3 top-3 rounded bg-[#111827] px-2 py-1 text-[11px] text-white">
               {tool === "rect" || tool === "room" ? (
