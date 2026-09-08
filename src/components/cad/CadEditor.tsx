@@ -148,6 +148,7 @@ export function CadEditor({
   const [sheet, setSheet] = useState<SheetSize>("A3");
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
 
   const svgRef = useRef<SVGSVGElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -572,8 +573,23 @@ export function CadEditor({
     }
   }
 
-  function onDoubleClick() {
-    if (draft.length) finishDraft(draft, tool);
+  function onDoubleClick(ev: React.MouseEvent) {
+    if (draft.length) return finishDraft(draft, tool);
+    const raw = toWorld(ev.clientX, ev.clientY);
+    const hit = [...pickableEntities].reverse().find((e) => hitTest(e, raw, tolMm));
+    if (hit) {
+      setSel([hit.id]);
+      setRightTab("props");
+    }
+  }
+
+  function onContextMenu(ev: React.MouseEvent) {
+    ev.preventDefault();
+    const raw = toWorld(ev.clientX, ev.clientY);
+    const hit = [...pickableEntities].reverse().find((e) => hitTest(e, raw, tolMm));
+    if (hit && !sel.includes(hit.id)) setSel([hit.id]);
+    const r = wrapRef.current?.getBoundingClientRect();
+    setMenu({ x: ev.clientX - (r?.left ?? 0), y: ev.clientY - (r?.top ?? 0) });
   }
 
   /* ------------------------------- commands -------------------------------- */
@@ -592,6 +608,18 @@ export function CadEditor({
       .map((e) => ({ ...translateEntity(e, { x: 500, y: 500 }), id: cadUid() }));
     addEntities(copies);
   }, [doc.entities, sel, addEntities]);
+
+  const nudgeSel = useCallback(
+    (dx: number, dy: number) => {
+      if (!sel.length) return;
+      commit((d) => ({
+        ...d,
+        entities: d.entities.map((e) => (sel.includes(e.id) ? translateEntity(e, { x: dx, y: dy }) : e)),
+      }));
+    },
+    [sel, commit],
+  );
+
 
   const rotateSel = useCallback(
     (deg: number) => {
@@ -803,6 +831,14 @@ export function CadEditor({
         return;
       }
       if (ev.key === "Delete" || ev.key === "Backspace") return deleteSel();
+      if (ev.key.startsWith("Arrow") && sel.length) {
+        ev.preventDefault();
+        const step = ev.shiftKey ? doc.gridSize : doc.gridSize / 5;
+        const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[
+          ev.key
+        ] ?? [0, 0];
+        return nudgeSel(d[0]!, d[1]!);
+      }
       if (ev.key === "[") return rotateSel(-15);
       if (ev.key === "]") return rotateSel(15);
       if (ev.key === " ") {
@@ -818,7 +854,7 @@ export function CadEditor({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, redo, deleteSel, duplicateSel, draft, tool, finishDraft, selected, clipboard, addEntities, pickableEntities, save, rotateSel]);
+  }, [undo, redo, deleteSel, duplicateSel, draft, tool, finishDraft, selected, clipboard, addEntities, pickableEntities, save, rotateSel, nudgeSel, sel, doc.gridSize]);
 
   /* --------------------------------- files --------------------------------- */
 
@@ -986,6 +1022,7 @@ export function CadEditor({
             onPointerUp={onPointerUp}
             onPointerLeave={onPointerUp}
             onDoubleClick={onDoubleClick}
+            onContextMenu={onContextMenu}
           >
             <defs>
               <marker id="dimArrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
@@ -1089,6 +1126,45 @@ export function CadEditor({
               </g>
             </g>
           </svg>
+
+          {menu && (
+            <>
+              <div className="fixed inset-0 z-40" onPointerDown={() => setMenu(null)} onContextMenu={(e) => e.preventDefault()} />
+              <div
+                className="absolute z-50 w-44 overflow-hidden rounded border border-studio-line bg-studio-paper text-[11px] shadow-lg"
+                style={{ left: menu.x, top: menu.y }}
+              >
+                {[
+                  { label: "Edit properties", fn: () => setRightTab("props"), need: true },
+                  { label: "Duplicate", fn: duplicateSel, need: true },
+                  { label: "Copy", fn: () => setClipboard(selected.map((e) => ({ ...e }))), need: true },
+                  {
+                    label: "Paste",
+                    fn: () => addEntities(clipboard.map((e) => ({ ...translateEntity(e, { x: 600, y: 600 }), id: cadUid() }))),
+                    need: false,
+                    disabled: !clipboard.length,
+                  },
+                  { label: "Rotate 90°", fn: () => rotateSel(90), need: true },
+                  { label: "Mirror", fn: mirrorSel, need: true },
+                  { label: "Delete", fn: deleteSel, need: true, danger: true },
+                ].map((m) => (
+                  <button
+                    key={m.label}
+                    disabled={(m.need && !sel.length) || m.disabled}
+                    onClick={() => {
+                      m.fn();
+                      setMenu(null);
+                    }}
+                    className={`block w-full px-3 py-1.5 text-left hover:bg-black/5 disabled:opacity-40 ${
+                      m.danger ? "text-red-600" : ""
+                    }`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
 
           {draft.length > 0 && (
             <div className="pointer-events-none absolute left-3 top-3 rounded bg-[#111827] px-2 py-1 text-[11px] text-white">

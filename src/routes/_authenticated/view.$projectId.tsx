@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/app/AppShell";
 import { View3D } from "@/components/planner/View3D";
-import { normalizePlan, planArea, planFromCad } from "@/lib/plan";
+import { planArea, planFromCad } from "@/lib/plan";
 
 export const Route = createFileRoute("/_authenticated/view/$projectId")({
   head: () => ({
@@ -43,9 +43,7 @@ function ViewPage() {
     );
   }
 
-  const base = normalizePlan(data?.plan);
-  const cadPlan = planFromCad((data?.plan as Record<string, unknown> | null)?.["cad"]);
-  const plan = base.rooms.length ? base : cadPlan;
+  const plan = planFromCad((data?.plan as Record<string, unknown> | null)?.["cad"]);
   const plot = (data?.plot ?? {}) as Record<string, unknown>;
 
   return (
@@ -54,11 +52,11 @@ function ViewPage() {
       actions={
         <>
           <Link
-            to="/plan/$projectId"
+            to="/cad/$projectId"
             params={{ projectId }}
             className="flex items-center gap-2 rounded-md border border-border px-4 py-2 text-xs"
           >
-            <ArrowLeft className="h-3.5 w-3.5" /> Back to 2D
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to CAD
           </Link>
           <Link
             to="/elevation/$projectId"

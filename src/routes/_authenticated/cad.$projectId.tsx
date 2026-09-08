@@ -60,9 +60,6 @@ function CadPage() {
           EDIFICE
         </Link>
         <div className="flex items-center gap-2 text-xs">
-          <Link to="/plan/$projectId" params={{ projectId }} className="rounded-md border border-border px-3 py-1.5">
-            Quick plan
-          </Link>
           <Link to="/view/$projectId" params={{ projectId }} className="rounded-md border border-border px-3 py-1.5">
             3D
           </Link>

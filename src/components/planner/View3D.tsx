@@ -212,11 +212,60 @@ export function View3D({ plan, plot }: { plan: FloorPlan; plot: { w: number; h: 
               </div>
             );
           })}
+
+          {plan.walls.map((w) => {
+            const x1 = w.x1 * PX_PER_FT;
+            const y1 = w.y1 * PX_PER_FT;
+            const len = Math.hypot(w.x2 - w.x1, w.y2 - w.y1) * PX_PER_FT;
+            if (len < 2) return null;
+            const angle = (Math.atan2(w.y2 - w.y1, w.x2 - w.x1) * 180) / Math.PI;
+            return (
+              <div
+                key={w.id}
+                className="absolute"
+                style={{
+                  left: x1,
+                  top: y1,
+                  width: len,
+                  height: wallPx,
+                  transformOrigin: "0 0",
+                  transform: `rotateZ(${angle}deg) rotateX(90deg)`,
+                  background: "linear-gradient(180deg, #f1f5f9, #cbd5e1)",
+                  border: "1px solid rgb(100 116 139 / 0.7)",
+                  opacity,
+                }}
+              />
+            );
+          })}
+
+          {plan.openings.map((o) => {
+            const len = o.len * PX_PER_FT;
+            const isWin = o.type === "window";
+            const h = isWin ? wallPx * 0.4 : wallPx * 0.8;
+            return (
+              <div
+                key={o.id}
+                className="absolute"
+                style={{
+                  left: o.x * PX_PER_FT,
+                  top: o.y * PX_PER_FT,
+                  width: len,
+                  height: h,
+                  transformOrigin: "0 0",
+                  transform: `translate(${-len / 2}px, 0) rotateZ(${o.rot}deg) rotateX(90deg) translateZ(2px) translateY(${
+                    isWin ? -wallPx * 0.45 : 0
+                  }px)`,
+                  background: isWin ? "rgb(56 189 248 / 0.55)" : "rgb(180 83 9 / 0.75)",
+                  border: "1px solid rgb(15 23 42 / 0.35)",
+                }}
+              />
+            );
+          })}
         </div>
 
-        {plan.rooms.length === 0 && (
+        {plan.rooms.length === 0 && plan.walls.length === 0 && (
           <p className="absolute inset-0 flex items-center justify-center text-sm text-studio-ink/60">
-            Draw rooms in the 2D editor to see them rise in 3D.
+            Draw rooms and walls in the CAD editor to see them rise in 3D.
           </p>
         )}
       </div>

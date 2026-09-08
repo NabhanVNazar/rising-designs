@@ -17,7 +17,6 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedRequirementsRouteImport } from './routes/_authenticated/requirements'
 import { Route as AuthenticatedCadProjectIdRouteImport } from './routes/_authenticated/cad.$projectId'
 import { Route as AuthenticatedElevationProjectIdRouteImport } from './routes/_authenticated/elevation.$projectId'
-import { Route as AuthenticatedPlanProjectIdRouteImport } from './routes/_authenticated/plan.$projectId'
 import { Route as AuthenticatedViewProjectIdRouteImport } from './routes/_authenticated/view.$projectId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -62,12 +61,6 @@ const AuthenticatedElevationProjectIdRoute =
     path: '/elevation/$projectId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedPlanProjectIdRoute =
-  AuthenticatedPlanProjectIdRouteImport.update({
-    id: '/plan/$projectId',
-    path: '/plan/$projectId',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedViewProjectIdRoute =
   AuthenticatedViewProjectIdRouteImport.update({
     id: '/view/$projectId',
@@ -83,7 +76,6 @@ export interface FileRoutesByFullPath {
   '/requirements': typeof AuthenticatedRequirementsRoute
   '/cad/$projectId': typeof AuthenticatedCadProjectIdRoute
   '/elevation/$projectId': typeof AuthenticatedElevationProjectIdRoute
-  '/plan/$projectId': typeof AuthenticatedPlanProjectIdRoute
   '/view/$projectId': typeof AuthenticatedViewProjectIdRoute
 }
 export interface FileRoutesByTo {
@@ -94,7 +86,6 @@ export interface FileRoutesByTo {
   '/requirements': typeof AuthenticatedRequirementsRoute
   '/cad/$projectId': typeof AuthenticatedCadProjectIdRoute
   '/elevation/$projectId': typeof AuthenticatedElevationProjectIdRoute
-  '/plan/$projectId': typeof AuthenticatedPlanProjectIdRoute
   '/view/$projectId': typeof AuthenticatedViewProjectIdRoute
 }
 export interface FileRoutesById {
@@ -107,7 +98,6 @@ export interface FileRoutesById {
   '/_authenticated/requirements': typeof AuthenticatedRequirementsRoute
   '/_authenticated/cad/$projectId': typeof AuthenticatedCadProjectIdRoute
   '/_authenticated/elevation/$projectId': typeof AuthenticatedElevationProjectIdRoute
-  '/_authenticated/plan/$projectId': typeof AuthenticatedPlanProjectIdRoute
   '/_authenticated/view/$projectId': typeof AuthenticatedViewProjectIdRoute
 }
 export interface FileRouteTypes {
@@ -120,7 +110,6 @@ export interface FileRouteTypes {
     | '/requirements'
     | '/cad/$projectId'
     | '/elevation/$projectId'
-    | '/plan/$projectId'
     | '/view/$projectId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -131,7 +120,6 @@ export interface FileRouteTypes {
     | '/requirements'
     | '/cad/$projectId'
     | '/elevation/$projectId'
-    | '/plan/$projectId'
     | '/view/$projectId'
   id:
     | '__root__'
@@ -143,7 +131,6 @@ export interface FileRouteTypes {
     | '/_authenticated/requirements'
     | '/_authenticated/cad/$projectId'
     | '/_authenticated/elevation/$projectId'
-    | '/_authenticated/plan/$projectId'
     | '/_authenticated/view/$projectId'
   fileRoutesById: FileRoutesById
 }
@@ -212,13 +199,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedElevationProjectIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/plan/$projectId': {
-      id: '/_authenticated/plan/$projectId'
-      path: '/plan/$projectId'
-      fullPath: '/plan/$projectId'
-      preLoaderRoute: typeof AuthenticatedPlanProjectIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/view/$projectId': {
       id: '/_authenticated/view/$projectId'
       path: '/view/$projectId'
@@ -234,7 +214,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRequirementsRoute: typeof AuthenticatedRequirementsRoute
   AuthenticatedCadProjectIdRoute: typeof AuthenticatedCadProjectIdRoute
   AuthenticatedElevationProjectIdRoute: typeof AuthenticatedElevationProjectIdRoute
-  AuthenticatedPlanProjectIdRoute: typeof AuthenticatedPlanProjectIdRoute
   AuthenticatedViewProjectIdRoute: typeof AuthenticatedViewProjectIdRoute
 }
 
@@ -243,7 +222,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRequirementsRoute: AuthenticatedRequirementsRoute,
   AuthenticatedCadProjectIdRoute: AuthenticatedCadProjectIdRoute,
   AuthenticatedElevationProjectIdRoute: AuthenticatedElevationProjectIdRoute,
-  AuthenticatedPlanProjectIdRoute: AuthenticatedPlanProjectIdRoute,
   AuthenticatedViewProjectIdRoute: AuthenticatedViewProjectIdRoute,
 }
 
