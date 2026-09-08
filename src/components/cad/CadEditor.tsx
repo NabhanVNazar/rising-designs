@@ -609,6 +609,18 @@ export function CadEditor({
     addEntities(copies);
   }, [doc.entities, sel, addEntities]);
 
+  const nudgeSel = useCallback(
+    (dx: number, dy: number) => {
+      if (!sel.length) return;
+      commit((d) => ({
+        ...d,
+        entities: d.entities.map((e) => (sel.includes(e.id) ? translateEntity(e, { x: dx, y: dy }) : e)),
+      }));
+    },
+    [sel, commit],
+  );
+
+
   const rotateSel = useCallback(
     (deg: number) => {
       if (!sel.length) return;
