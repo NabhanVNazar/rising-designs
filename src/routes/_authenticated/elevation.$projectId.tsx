@@ -5,7 +5,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/app/AppShell";
 import { Elevation, type Side } from "@/components/planner/Elevation";
-import { normalizePlan } from "@/lib/plan";
+import { planFromCad } from "@/lib/plan";
 
 export const Route = createFileRoute("/_authenticated/elevation/$projectId")({
   head: () => ({
@@ -50,7 +50,7 @@ function ElevationPage() {
     );
   }
 
-  const plan = normalizePlan(data?.plan);
+  const plan = planFromCad((data?.plan as Record<string, unknown> | null)?.["cad"]);
   const plot = (data?.plot ?? {}) as Record<string, unknown>;
   const req = (data?.requirements ?? {}) as Record<string, unknown>;
   const floors = Math.max(1, Math.min(4, Number(req["floors"]) || 1));

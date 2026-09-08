@@ -99,7 +99,7 @@ function Requirements() {
         .select("id")
         .single();
       if (error) throw error;
-      navigate({ to: "/plan/$projectId", params: { projectId: data.id } });
+      navigate({ to: "/cad/$projectId", params: { projectId: data.id } });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not save");
     } finally {
