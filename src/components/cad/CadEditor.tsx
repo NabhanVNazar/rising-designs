@@ -113,10 +113,22 @@ export function CadEditor({
   initialDoc,
   onPersist,
   projectName,
+  pages,
+  activePageId,
+  onSelectPage,
+  onAddPage,
+  onRenamePage,
+  onDeletePage,
 }: {
   initialDoc: CadDoc;
   onPersist?: (doc: CadDoc) => Promise<void> | void;
   projectName?: string;
+  pages?: { id: string; name: string }[];
+  activePageId?: string;
+  onSelectPage?: (id: string) => void;
+  onAddPage?: () => void;
+  onRenamePage?: (id: string, name: string) => void;
+  onDeletePage?: (id: string) => void;
 }) {
   const [doc, setDocState] = useState<CadDoc>(initialDoc);
   const [past, setPast] = useState<CadDoc[]>([]);
