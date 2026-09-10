@@ -1004,6 +1004,55 @@ export function CadEditor({
         />
       </div>
 
+      {pages && pages.length > 0 ? (
+        <div className="flex items-center gap-1 overflow-x-auto border-b border-studio-line bg-studio-paper px-3 py-1.5 text-[11px]">
+          <span className="mr-1 text-studio-ink/50">Pages</span>
+          {pages.map((p) => {
+            const active = p.id === activePageId;
+            return (
+              <div
+                key={p.id}
+                className={`group flex items-center gap-1 rounded border px-2 py-1 ${
+                  active
+                    ? "border-studio-line bg-studio text-studio-ink"
+                    : "border-transparent text-studio-ink/60 hover:border-studio-line"
+                }`}
+              >
+                <button
+                  onClick={() => (active ? undefined : void flushThen(() => onSelectPage?.(p.id)))}
+                  onDoubleClick={() => {
+                    const name = window.prompt("Rename page", p.name);
+                    if (name?.trim()) onRenamePage?.(p.id, name.trim());
+                  }}
+                  title={active ? "Double-click to rename" : "Open this page"}
+                >
+                  {p.name}
+                </button>
+                {pages.length > 1 && onDeletePage ? (
+                  <button
+                    aria-label={`Delete ${p.name}`}
+                    className="opacity-0 transition group-hover:opacity-100"
+                    onClick={() => {
+                      if (window.confirm(`Delete page "${p.name}"?`)) onDeletePage(p.id);
+                    }}
+                  >
+                    ×
+                  </button>
+                ) : null}
+              </div>
+            );
+          })}
+          {onAddPage ? (
+            <button
+              onClick={() => void flushThen(() => onAddPage())}
+              className="rounded border border-dashed border-studio-line px-2 py-1 text-studio-ink/70"
+            >
+              + Add page
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className="flex min-h-0 flex-1">
         {/* Left tool rail */}
         <div className="flex w-12 shrink-0 flex-col items-center gap-1 border-r border-studio-line bg-studio-paper py-2">
