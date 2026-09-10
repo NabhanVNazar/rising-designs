@@ -1,10 +1,11 @@
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { CadEditor } from "@/components/cad/CadEditor";
-import { normalizeDoc, type CadDoc } from "@/lib/cad/types";
+import { cadUid, normalizeDoc, emptyDoc, type CadDoc } from "@/lib/cad/types";
 
 export const Route = createFileRoute("/_authenticated/cad/$projectId")({
   head: () => ({
@@ -22,6 +23,23 @@ export const Route = createFileRoute("/_authenticated/cad/$projectId")({
   component: CadPage,
 });
 
+type Page = { id: string; name: string; doc: CadDoc };
+
+function readPages(plan: Record<string, unknown>, fallbackName: string): Page[] {
+  const raw = plan["cadPages"];
+  if (Array.isArray(raw) && raw.length) {
+    return raw.map((p, i) => {
+      const o = (p ?? {}) as Record<string, unknown>;
+      return {
+        id: typeof o["id"] === "string" ? (o["id"] as string) : cadUid(),
+        name: typeof o["name"] === "string" ? (o["name"] as string) : `Page ${i + 1}`,
+        doc: normalizeDoc(o["doc"]),
+      };
+    });
+  }
+  return [{ id: cadUid(), name: "Page 1", doc: normalizeDoc({ ...(plan["cad"] as object | undefined), name: fallbackName }) }];
+}
+
 function CadPage() {
   const { projectId } = useParams({ from: "/_authenticated/cad/$projectId" });
 
@@ -34,7 +52,22 @@ function CadPage() {
     },
   });
 
-  if (isLoading) {
+  const [pages, setPages] = useState<Page[] | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const plan = useMemo(() => (data?.plan ?? {}) as Record<string, unknown>, [data]);
+
+  useEffect(() => {
+    if (!data || pages) return;
+    const loaded = readPages(plan, data.name ?? "Floor plan");
+    setPages(loaded);
+    const saved = plan["activeCadPage"];
+    setActiveId(
+      typeof saved === "string" && loaded.some((p) => p.id === saved) ? saved : loaded[0]!.id,
+    );
+  }, [data, plan, pages]);
+
+  if (isLoading || !pages || !activeId) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <Loader2 className="h-5 w-5 animate-spin text-primary" />
@@ -42,15 +75,59 @@ function CadPage() {
     );
   }
 
-  const plan = (data?.plan ?? {}) as Record<string, unknown>;
-  const doc = normalizeDoc({ ...(plan["cad"] as object | undefined), name: data?.name ?? "Floor plan" });
+  const active = pages.find((p) => p.id === activeId) ?? pages[0]!;
 
-  async function persist(next: CadDoc) {
+  async function store(nextPages: Page[], nextActive: string) {
+    const activeDoc = (nextPages.find((p) => p.id === nextActive) ?? nextPages[0]!).doc;
     const { error } = await supabase
       .from("projects")
-      .update({ plan: { ...plan, cad: next }, updated_at: new Date().toISOString() })
+      .update({
+        plan: {
+          ...plan,
+          cadPages: nextPages,
+          activeCadPage: nextActive,
+          cad: activeDoc,
+        },
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", projectId);
     if (error) toast.error(error.message);
+  }
+
+  async function persist(next: CadDoc) {
+    const nextPages = pages!.map((p) => (p.id === activeId ? { ...p, doc: next } : p));
+    setPages(nextPages);
+    await store(nextPages, activeId!);
+  }
+
+  function addPage() {
+    const name = `Page ${pages!.length + 1}`;
+    const page: Page = { id: cadUid(), name, doc: emptyDoc(name) };
+    const nextPages = [...pages!, page];
+    setPages(nextPages);
+    setActiveId(page.id);
+    void store(nextPages, page.id);
+    toast.success(`${name} added — earlier pages are kept`);
+  }
+
+  function selectPage(id: string) {
+    setActiveId(id);
+    void store(pages!, id);
+  }
+
+  function renamePage(id: string, name: string) {
+    const nextPages = pages!.map((p) => (p.id === id ? { ...p, name } : p));
+    setPages(nextPages);
+    void store(nextPages, activeId!);
+  }
+
+  function deletePage(id: string) {
+    if (pages!.length < 2) return;
+    const nextPages = pages!.filter((p) => p.id !== id);
+    const nextActive = id === activeId ? nextPages[0]!.id : activeId!;
+    setPages(nextPages);
+    setActiveId(nextActive);
+    void store(nextPages, nextActive);
   }
 
   return (
@@ -69,7 +146,18 @@ function CadPage() {
         </div>
       </div>
       <div className="min-h-0 flex-1">
-        <CadEditor initialDoc={doc} onPersist={persist} projectName={data?.name ?? "Floor plan"} />
+        <CadEditor
+          key={active.id}
+          initialDoc={active.doc}
+          onPersist={persist}
+          projectName={`${data?.name ?? "Floor plan"} · ${active.name}`}
+          pages={pages.map((p) => ({ id: p.id, name: p.name }))}
+          activePageId={active.id}
+          onSelectPage={selectPage}
+          onAddPage={addPage}
+          onRenamePage={renamePage}
+          onDeletePage={deletePage}
+        />
       </div>
     </div>
   );
