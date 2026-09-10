@@ -680,6 +680,15 @@ export function CadEditor({
     return () => clearTimeout(t);
   }, [dirty, doc, onPersist, save]);
 
+  // ---- pages (multi-sheet) ----
+  const flushThen = useCallback(
+    async (fn: () => void) => {
+      if (dirty) await save();
+      fn();
+    },
+    [dirty, save],
+  );
+
   function runAction(action: string) {
     switch (action) {
       case "undo":
