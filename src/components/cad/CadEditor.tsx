@@ -940,7 +940,11 @@ export function CadEditor({
       {/* Top toolbar */}
       <div className="flex flex-wrap items-center gap-1.5 border-b border-studio-line bg-studio-paper px-3 py-2 text-[11px]">
         <span className="mr-2 font-display text-xs font-bold tracking-widest">{projectName ?? doc.name}</span>
-        <TBtn onClick={() => { setDocState(emptyDoc(doc.name)); setSel([]); setDirty(true); }} icon={Plus} label="New" />
+        {pages && onAddPage ? (
+          <TBtn onClick={() => void flushThen(() => onAddPage())} icon={Plus} label="New page" />
+        ) : (
+          <TBtn onClick={() => { setDocState(emptyDoc(doc.name)); setSel([]); setDirty(true); }} icon={Plus} label="New" />
+        )}
         <TBtn onClick={() => fileRef.current?.click()} icon={Upload} label="Open" />
         <TBtn onClick={() => void save()} icon={Save} label={saving ? "Saving…" : dirty ? "Save*" : "Saved"} />
         <TBtn onClick={() => exportJSON(doc)} icon={Download} label="Save as JSON" />
