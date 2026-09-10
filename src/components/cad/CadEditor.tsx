@@ -113,10 +113,22 @@ export function CadEditor({
   initialDoc,
   onPersist,
   projectName,
+  pages,
+  activePageId,
+  onSelectPage,
+  onAddPage,
+  onRenamePage,
+  onDeletePage,
 }: {
   initialDoc: CadDoc;
   onPersist?: (doc: CadDoc) => Promise<void> | void;
   projectName?: string;
+  pages?: { id: string; name: string }[];
+  activePageId?: string;
+  onSelectPage?: (id: string) => void;
+  onAddPage?: () => void;
+  onRenamePage?: (id: string, name: string) => void;
+  onDeletePage?: (id: string) => void;
 }) {
   const [doc, setDocState] = useState<CadDoc>(initialDoc);
   const [past, setPast] = useState<CadDoc[]>([]);
@@ -668,6 +680,15 @@ export function CadEditor({
     return () => clearTimeout(t);
   }, [dirty, doc, onPersist, save]);
 
+  // ---- pages (multi-sheet) ----
+  const flushThen = useCallback(
+    async (fn: () => void) => {
+      if (dirty) await save();
+      fn();
+    },
+    [dirty, save],
+  );
+
   function runAction(action: string) {
     switch (action) {
       case "undo":
@@ -919,7 +940,11 @@ export function CadEditor({
       {/* Top toolbar */}
       <div className="flex flex-wrap items-center gap-1.5 border-b border-studio-line bg-studio-paper px-3 py-2 text-[11px]">
         <span className="mr-2 font-display text-xs font-bold tracking-widest">{projectName ?? doc.name}</span>
-        <TBtn onClick={() => { setDocState(emptyDoc(doc.name)); setSel([]); setDirty(true); }} icon={Plus} label="New" />
+        {pages && onAddPage ? (
+          <TBtn onClick={() => void flushThen(() => onAddPage())} icon={Plus} label="New page" />
+        ) : (
+          <TBtn onClick={() => { setDocState(emptyDoc(doc.name)); setSel([]); setDirty(true); }} icon={Plus} label="New" />
+        )}
         <TBtn onClick={() => fileRef.current?.click()} icon={Upload} label="Open" />
         <TBtn onClick={() => void save()} icon={Save} label={saving ? "Saving…" : dirty ? "Save*" : "Saved"} />
         <TBtn onClick={() => exportJSON(doc)} icon={Download} label="Save as JSON" />
@@ -978,6 +1003,55 @@ export function CadEditor({
           }}
         />
       </div>
+
+      {pages && pages.length > 0 ? (
+        <div className="flex items-center gap-1 overflow-x-auto border-b border-studio-line bg-studio-paper px-3 py-1.5 text-[11px]">
+          <span className="mr-1 text-studio-ink/50">Pages</span>
+          {pages.map((p) => {
+            const active = p.id === activePageId;
+            return (
+              <div
+                key={p.id}
+                className={`group flex items-center gap-1 rounded border px-2 py-1 ${
+                  active
+                    ? "border-studio-line bg-studio text-studio-ink"
+                    : "border-transparent text-studio-ink/60 hover:border-studio-line"
+                }`}
+              >
+                <button
+                  onClick={() => (active ? undefined : void flushThen(() => onSelectPage?.(p.id)))}
+                  onDoubleClick={() => {
+                    const name = window.prompt("Rename page", p.name);
+                    if (name?.trim()) onRenamePage?.(p.id, name.trim());
+                  }}
+                  title={active ? "Double-click to rename" : "Open this page"}
+                >
+                  {p.name}
+                </button>
+                {pages.length > 1 && onDeletePage ? (
+                  <button
+                    aria-label={`Delete ${p.name}`}
+                    className="opacity-0 transition group-hover:opacity-100"
+                    onClick={() => {
+                      if (window.confirm(`Delete page "${p.name}"?`)) onDeletePage(p.id);
+                    }}
+                  >
+                    ×
+                  </button>
+                ) : null}
+              </div>
+            );
+          })}
+          {onAddPage ? (
+            <button
+              onClick={() => void flushThen(() => onAddPage())}
+              className="rounded border border-dashed border-studio-line px-2 py-1 text-studio-ink/70"
+            >
+              + Add page
+            </button>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="flex min-h-0 flex-1">
         {/* Left tool rail */}
