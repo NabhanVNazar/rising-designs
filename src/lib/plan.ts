@@ -18,6 +18,10 @@ export type Opening = {
   len: number;
   /** 0 = horizontal, 90 = vertical */
   rot: 0 | 90;
+  /** opening height in feet */
+  h: number;
+  /** height of the sill above the floor, feet */
+  sill: number;
 };
 
 export type Wall = {
@@ -26,7 +30,12 @@ export type Wall = {
   y1: number;
   x2: number;
   y2: number;
+  /** thickness in feet */
+  t: number;
+  /** height in feet */
+  hgt: number;
 };
+
 
 export type Label = {
   id: string;
