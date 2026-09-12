@@ -18,6 +18,10 @@ export type Opening = {
   len: number;
   /** 0 = horizontal, 90 = vertical */
   rot: 0 | 90;
+  /** opening height in feet */
+  h: number;
+  /** height of the sill above the floor, feet */
+  sill: number;
 };
 
 export type Wall = {
@@ -26,7 +30,12 @@ export type Wall = {
   y1: number;
   x2: number;
   y2: number;
+  /** thickness in feet */
+  t: number;
+  /** height in feet */
+  hgt: number;
 };
+
 
 export type Label = {
   id: string;
@@ -88,11 +97,13 @@ export function normalizePlan(value: unknown): FloorPlan {
       .filter((o): o is Opening => !!o && typeof o === "object")
       .map((o) => ({
         id: String(o.id ?? uid()),
-        type: o.type === "window" ? "window" : "door",
+        type: o.type === "window" ? ("window" as const) : ("door" as const),
         x: Number(o.x) || 0,
         y: Number(o.y) || 0,
         len: Math.max(1, Number(o.len) || 3),
-        rot: Number(o.rot) === 90 ? 90 : 0,
+        rot: (Number(o.rot) === 90 ? 90 : 0) as 0 | 90,
+        h: Number(o.h) > 0 ? Number(o.h) : o.type === "window" ? 4 : 6.9,
+        sill: Number.isFinite(Number(o.sill)) ? Number(o.sill) : o.type === "window" ? 3 : 0,
       })),
     walls: (Array.isArray(raw.walls) ? raw.walls : [])
       .filter((w): w is Wall => !!w && typeof w === "object")
@@ -102,7 +113,10 @@ export function normalizePlan(value: unknown): FloorPlan {
         y1: Number(w.y1) || 0,
         x2: Number(w.x2) || 0,
         y2: Number(w.y2) || 0,
+        t: Number(w.t) > 0 ? Number(w.t) : 0.75,
+        hgt: Number(w.hgt) > 0 ? Number(w.hgt) : 9.8,
       })),
+
     labels: (Array.isArray(raw.labels) ? raw.labels : [])
       .filter((l): l is Label => !!l && typeof l === "object")
       .map((l) => ({
@@ -186,19 +200,25 @@ export function planFromCad(cad: unknown): FloorPlan {
         y1: fy(n(a["y"])),
         x2: fx(n(b["x"])),
         y2: fy(n(b["y"])),
+        t: Math.max(0.2, (n(w["thickness"]) || 230) / MM_PER_FT),
+        hgt: Math.max(4, (n(w["height"]) || 3000) / MM_PER_FT),
       };
     }),
     openings: cadOpen.map((o) => {
       const c = (o["c"] ?? {}) as Record<string, unknown>;
       const rot = Math.abs(((n(o["rot"]) % 180) + 180) % 180 - 90) < 45 ? 90 : 0;
+      const isWin = o["type"] === "window";
       return {
         id: String(o["id"] ?? uid()),
-        type: o["type"] === "window" ? ("window" as const) : ("door" as const),
+        type: isWin ? ("window" as const) : ("door" as const),
         x: fx(n(c["x"])),
         y: fy(n(c["y"])),
         len: Math.max(1, n(o["width"]) / MM_PER_FT),
         rot: rot as 0 | 90,
+        h: Math.max(1, (n(o["height"]) || (isWin ? 1200 : 2100)) / MM_PER_FT),
+        sill: isWin ? 900 / MM_PER_FT : 0,
       };
     }),
+
   };
 }
