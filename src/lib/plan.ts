@@ -97,11 +97,13 @@ export function normalizePlan(value: unknown): FloorPlan {
       .filter((o): o is Opening => !!o && typeof o === "object")
       .map((o) => ({
         id: String(o.id ?? uid()),
-        type: o.type === "window" ? "window" : "door",
+        type: o.type === "window" ? ("window" as const) : ("door" as const),
         x: Number(o.x) || 0,
         y: Number(o.y) || 0,
         len: Math.max(1, Number(o.len) || 3),
-        rot: Number(o.rot) === 90 ? 90 : 0,
+        rot: (Number(o.rot) === 90 ? 90 : 0) as 0 | 90,
+        h: Number(o.h) > 0 ? Number(o.h) : o.type === "window" ? 4 : 6.9,
+        sill: Number.isFinite(Number(o.sill)) ? Number(o.sill) : o.type === "window" ? 3 : 0,
       })),
     walls: (Array.isArray(raw.walls) ? raw.walls : [])
       .filter((w): w is Wall => !!w && typeof w === "object")
@@ -111,7 +113,10 @@ export function normalizePlan(value: unknown): FloorPlan {
         y1: Number(w.y1) || 0,
         x2: Number(w.x2) || 0,
         y2: Number(w.y2) || 0,
+        t: Number(w.t) > 0 ? Number(w.t) : 0.75,
+        hgt: Number(w.hgt) > 0 ? Number(w.hgt) : 9.8,
       })),
+
     labels: (Array.isArray(raw.labels) ? raw.labels : [])
       .filter((l): l is Label => !!l && typeof l === "object")
       .map((l) => ({
